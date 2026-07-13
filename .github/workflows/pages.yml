@@ -1,0 +1,41 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Minify (vanilla CSS/HTML stay readable in-repo)
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp -r docs/* _site/
+          npx --yes clean-css-cli@5 -o _site/style.css docs/style.css
+          npx --yes html-minifier-terser@7 --collapse-whitespace --remove-comments \
+            --minify-css true -o _site/index.html docs/index.html
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

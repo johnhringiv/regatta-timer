@@ -3,7 +3,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="#0B3D91" />
+            <solid android:color="#FAFAF5" />
         </shape>
     </item>
     <item android:drawable="@drawable/ic_launcher_foreground" />

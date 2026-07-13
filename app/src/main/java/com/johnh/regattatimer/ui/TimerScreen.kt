@@ -32,6 +32,7 @@ private val Digits = Color(0xFFF5F5F5)
 private val Amber = Color(0xFFFFB300)
 private val Green = Color(0xFF4CAF50)
 private val DimGray = Color(0xFF9E9E9E)
+private val DimLabel = Color(0xFF6E6E6E)
 private val ZoneLabel = Color(0xFF7FA6C9)
 
 private fun Mode.label() = formatMmSs(durationSeconds)
@@ -49,14 +50,12 @@ fun TimerScreen(
     onReset: () -> Unit,
 ) {
     MaterialTheme {
-        if (isAmbient) {
-            when (state) {
-                is TimerState.CountUp -> AmbientCountUp(state, ambientTick)
-                // Wet screens force ambient mid-sequence: keep the live countdown visible.
-                else -> AmbientCountdown(displaySeconds)
-            }
+        if (isAmbient && state is TimerState.CountUp) {
+            AmbientCountUp(state, ambientTick)
             return@MaterialTheme
         }
+        // Idle/Countdown in ambient (wet screens force it) render the SAME layout,
+        // just dimmed — controls and labels never disappear mid-sequence.
 
         Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
             // Two half-screen touch zones (wet-hands friendly).
@@ -89,10 +88,12 @@ fun TimerScreen(
 
             // Labels + giant time display (no pointer input, so taps fall through to the zones).
             val digitColor = when {
+                isAmbient -> DimGray
                 state is TimerState.CountUp -> Green
                 state is TimerState.Countdown && displaySeconds <= 10 -> Amber
                 else -> Digits
             }
+            val labelColor = if (isAmbient) DimLabel else ZoneLabel
             val topLabel = when (state) {
                 is TimerState.Idle -> "tap → ${state.mode.other().label()}"
                 is TimerState.Countdown -> "SYNC"
@@ -112,7 +113,7 @@ fun TimerScreen(
                     text = topLabel,
                     modifier = Modifier.padding(top = 32.dp),
                     fontSize = 14.sp,
-                    color = ZoneLabel,
+                    color = labelColor,
                 )
                 Text(
                     text = formatMmSs(displaySeconds),
@@ -125,29 +126,12 @@ fun TimerScreen(
                     text = bottomLabel,
                     modifier = Modifier.padding(bottom = 24.dp),
                     fontSize = 14.sp,
-                    color = ZoneLabel,
+                    color = labelColor,
                 )
             }
 
-            TimeText()
+            if (!isAmbient) TimeText()
         }
-    }
-}
-
-/** Live ambient countdown: black background, dim gray digits, still ticking every second. */
-@Composable
-private fun AmbientCountdown(displaySeconds: Long) {
-    Box(
-        modifier = Modifier.fillMaxSize().background(Color.Black),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = formatMmSs(displaySeconds),
-            fontSize = 68.sp,
-            fontWeight = FontWeight.Bold,
-            color = DimGray,
-            style = TextStyle(fontFeatureSettings = "tnum"),
-        )
     }
 }
 
