@@ -114,7 +114,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
                         }
                         val sec = (remaining + 999) / 1000 // ceil: shows 5:00 for the first second
                         if (sec != lastShown) {
-                            if (lastShown != -1L) countdownCue(sec)
+                            if (lastShown != -1L) countdownCue(sec, st.mode)
                             lastShown = sec
                             _displaySeconds.value = sec
                         }
@@ -133,10 +133,16 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Edge-triggered on the displayed-second value, so a sync can't double-fire or skip cues. */
-    private fun countdownCue(sec: Long) {
+    /**
+     * Edge-triggered on the displayed-second value, so a sync can't double-fire or skip cues.
+     * Cues mirror the actual signals: RRS 26 (5-4-1-0) in 5-minute mode — silent at 3:00/2:00;
+     * every minute in 3-minute club sequences. 1:00 is the same long buzz in both modes.
+     */
+    private fun countdownCue(sec: Long, mode: Mode) {
         when {
-            sec % 60 == 0L && sec > 0 -> haptics.minute()
+            sec == 240L && mode == Mode.FIVE -> haptics.prep()
+            sec == 60L -> haptics.oneMinute()
+            sec % 60 == 0L && sec > 60 && mode == Mode.THREE -> haptics.minute()
             sec in 1..10 -> haptics.tick()
         }
     }
