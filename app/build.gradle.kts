@@ -19,8 +19,8 @@ android {
         applicationId = "com.johnh.regattatimer"
         minSdk = 34
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "0.2"
     }
 
     signingConfigs {
@@ -66,6 +66,9 @@ dependencies {
     implementation(libs.wear)
     implementation(libs.activity.compose)
     implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.wear.tiles)
+    implementation(libs.wear.protolayout.material)
+    implementation(libs.guava)
 
     testImplementation(libs.junit)
 }

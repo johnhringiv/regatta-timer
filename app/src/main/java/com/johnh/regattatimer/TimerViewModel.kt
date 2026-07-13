@@ -28,6 +28,15 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---- User actions -------------------------------------------------------
 
+    /** Arm a specific mode from the tile; never disturbs a running sequence. */
+    fun armMode(mode: Mode) {
+        val st = _state.value
+        if (st is TimerState.Idle && st.mode != mode) {
+            _state.value = TimerState.Idle(mode)
+            _displaySeconds.value = mode.durationSeconds
+        }
+    }
+
     fun toggleMode() {
         val st = _state.value
         if (st is TimerState.Idle) {
