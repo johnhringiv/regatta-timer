@@ -1,6 +1,8 @@
 package com.johnh.regattatimer
 
 import android.app.Application
+import android.content.Context
+import android.os.PowerManager
 import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +27,30 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
 
     private var ticker: Job? = null
     private var inAmbient = false
+
+    // Water on the screen triggers the palm gesture and forces ambient mode; a partial
+    // wake lock keeps the ticker (display + haptic cues) running through the countdown.
+    private val powerManager = app.getSystemService(Context.POWER_SERVICE) as PowerManager
+    private var wakeLock: PowerManager.WakeLock? = null
+
+    private fun holdWakeLock(durationMs: Long) {
+        releaseWakeLock()
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK, "RegattaTimer:countdown"
+        ).apply {
+            setReferenceCounted(false)
+            acquire(durationMs + 10_000)
+        }
+    }
+
+    private fun releaseWakeLock() {
+        wakeLock?.let { if (it.isHeld) it.release() }
+        wakeLock = null
+    }
+
+    override fun onCleared() {
+        releaseWakeLock()
+    }
 
     // ---- User actions -------------------------------------------------------
 
@@ -53,6 +79,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             val now = SystemClock.elapsedRealtime()
             _state.value = TimerState.Countdown(st.mode, now + st.mode.durationMs)
             haptics.click()
+            holdWakeLock(st.mode.durationMs)
             startTicker()
         }
     }
@@ -70,6 +97,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
                 _state.value = st.copy(deadline = now + newRemaining)
                 _displaySeconds.value = newRemaining / 1000
                 haptics.click()
+                holdWakeLock(newRemaining)
             }
             startTicker()
         }
@@ -81,15 +109,20 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             _state.value = TimerState.Idle(st.mode)
             _displaySeconds.value = st.mode.durationSeconds
             haptics.resetConfirm()
+            releaseWakeLock()
             ticker?.cancel()
         }
     }
 
-    /** Pause the 1 Hz ticker in ambient; anchor math makes wake-up exact. */
+    /**
+     * Ambient handling by phase: a COUNTDOWN keeps ticking (wet screens force ambient —
+     * display and haptic cues must survive it, hence the wake lock). COUNT-UP pauses the
+     * ticker and renders minute-precision; anchor math makes wake-up exact.
+     */
     fun setAmbient(ambient: Boolean) {
         inAmbient = ambient
         if (ambient) {
-            ticker?.cancel()
+            if (_state.value is TimerState.CountUp) ticker?.cancel()
         } else if (_state.value !is TimerState.Idle) {
             startTicker()
         }
@@ -101,6 +134,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
         _state.value = countUp
         _displaySeconds.value = 0
         haptics.gun()
+        releaseWakeLock()
     }
 
     private fun startTicker() {
@@ -135,6 +169,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
                         val now = SystemClock.elapsedRealtime()
                         val elapsed = now - st.zero
                         _displaySeconds.value = elapsed / 1000
+                        if (inAmbient) return@launch // gun fired while ambient: go minute-precision
                         delay(((elapsed / 1000 + 1) * 1000 - elapsed).coerceAtLeast(10))
                     }
                 }

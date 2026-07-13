@@ -12,10 +12,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
+import androidx.compose.foundation.focusable
+import kotlin.math.abs
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -49,12 +59,44 @@ fun TimerScreen(
     onReset: () -> Unit,
 ) {
     MaterialTheme {
-        if (isAmbient && state is TimerState.CountUp) {
-            AmbientCountUp(state, ambientTick)
+        if (isAmbient) {
+            when (state) {
+                is TimerState.CountUp -> AmbientCountUp(state, ambientTick)
+                // Wet screens force ambient mid-sequence: keep the live countdown visible.
+                else -> AmbientCountdown(displaySeconds)
+            }
             return@MaterialTheme
         }
 
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+        // Crown rotation works when the screen is wet (and under touch lock):
+        // rotate = SYNC during countdown, mode toggle while idle.
+        val focusRequester = remember { FocusRequester() }
+        var rotaryAccum by remember { mutableFloatStateOf(0f) }
+        var lastRotaryFire by remember { mutableLongStateOf(0L) }
+        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .onRotaryScrollEvent { event ->
+                    val now = SystemClock.elapsedRealtime()
+                    if (now - lastRotaryFire < 800) return@onRotaryScrollEvent true
+                    rotaryAccum += event.verticalScrollPixels
+                    if (abs(rotaryAccum) > 60f) {
+                        rotaryAccum = 0f
+                        lastRotaryFire = now
+                        when (state) {
+                            is TimerState.Idle -> onToggleMode()
+                            is TimerState.Countdown -> onSync()
+                            is TimerState.CountUp -> {}
+                        }
+                    }
+                    true
+                }
+                .focusRequester(focusRequester)
+                .focusable()
+        ) {
             // Two half-screen touch zones (wet-hands friendly).
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(
@@ -127,6 +169,23 @@ fun TimerScreen(
 
             TimeText()
         }
+    }
+}
+
+/** Live ambient countdown: black background, dim gray digits, still ticking every second. */
+@Composable
+private fun AmbientCountdown(displaySeconds: Long) {
+    Box(
+        modifier = Modifier.fillMaxSize().background(Color.Black),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = formatMmSs(displaySeconds),
+            fontSize = 68.sp,
+            fontWeight = FontWeight.Bold,
+            color = DimGray,
+            style = TextStyle(fontFeatureSettings = "tnum"),
+        )
     }
 }
 
