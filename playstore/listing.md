@@ -1,20 +1,20 @@
 # Play Store listing — copy & console answers
 
 Everything needed to fill in the Play Console, prepared while account verification pends.
-Assets live in this directory (512 icon, feature graphic) and `docs/screenshots/` (Wear screenshots).
-Kept out of `docs/` deliberately — that directory deploys to the public site.
+Graphics regenerate via `generate-assets.ps1` (gitignored outputs); Wear screenshots live in
+`docs/screenshots/`. Kept out of `docs/` deliberately — that directory deploys to the public site.
 
 ## App details
 
-| Field | Value |
-|---|---|
-| App name (≤30) | `Regatta Timer` |
+| Field                   | Value                                                                      |
+| ----------------------- | -------------------------------------------------------------------------- |
+| App name (≤30)          | `Regatta Timer`                                                            |
 | Short description (≤80) | `Sailing race start timer: 5/3-min sequences, sync to the gun, works wet.` |
-| Category | Sports |
-| Tags | Sailing, Timer |
-| Website | https://regatta-timer.johnhringiv.com/ |
-| Email (public) | play@johnhringiv.com |
-| Privacy policy URL | https://regatta-timer.johnhringiv.com/privacy.html |
+| Category                | Sports                                                                     |
+| Tags                    | Sailing, Timer                                                             |
+| Website                 | https://regatta-timer.johnhringiv.com/                                     |
+| Email (public)          | play@johnhringiv.com                                                       |
+| Privacy policy URL      | https://regatta-timer.johnhringiv.com/privacy.html                         |
 
 ## Full description (≤4000 chars)
 
@@ -55,21 +55,21 @@ FEATURES
 
 ## Console questionnaire answers
 
-| Form | Answer |
-|---|---|
-| Data safety — data collected | **None** (no network access; timer state stored locally only) |
-| Data safety — data shared | None |
-| Data safety — encryption in transit | N/A (no transmission) |
-| Data safety — deletion request | N/A (nothing collected) |
-| Content rating (IARC) | Utility; no violence/UGC/gambling/ads → Everyone |
-| Target audience | 18 and over (avoids Families policy; not child-directed) |
-| Ads | Contains no ads |
-| News app | No |
-| COVID-19 app | No |
-| Government app | No |
-| Financial features | None |
-| Health features | None |
-| Login required | No |
+| Form                                | Answer                                                        |
+| ----------------------------------- | ------------------------------------------------------------- |
+| Data safety — data collected        | **None** (no network access; timer state stored locally only) |
+| Data safety — data shared           | None                                                          |
+| Data safety — encryption in transit | N/A (no transmission)                                         |
+| Data safety — deletion request      | N/A (nothing collected)                                       |
+| Content rating (IARC)               | Utility; no violence/UGC/gambling/ads → Everyone              |
+| Target audience                     | 18 and over (avoids Families policy; not child-directed)      |
+| Ads                                 | Contains no ads                                               |
+| News app                            | No                                                            |
+| COVID-19 app                        | No                                                            |
+| Government app                      | No                                                            |
+| Financial features                  | None                                                          |
+| Health features                     | None                                                          |
+| Login required                      | No                                                            |
 
 ## Assets checklist
 

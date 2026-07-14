@@ -24,16 +24,16 @@ Idle(mode) ──START──▶ Countdown(mode, deadline) ──deadline──�
 - **Idle**: armed at the mode's full duration (5:00 or 3:00), waiting for the warning signal.
 - **Countdown**: running toward the gun. `deadline` is a `SystemClock.elapsedRealtime()` anchor.
 - **CountUp**: race in progress; `zero` is the gun's elapsedRealtime anchor. Entered
-  automatically at 0:00 — the displayed zero uses the *deadline* (not "now") so count-up is exact.
+  automatically at 0:00 — the displayed zero uses the _deadline_ (not "now") so count-up is exact.
 - All timing derives from elapsedRealtime anchors — never accumulated ticks — so delayed
   coroutine wakeups can never drift the clock.
 
 ## 2. Modes
 
-| Mode | Duration | Signal model |
-|---|---|---|
-| FIVE | 5:00 | RRS 26 (5-4-1-0) |
-| THREE | 3:00 | club dinghy start (3-2-1-0, every minute) |
+| Mode  | Duration | Signal model                              |
+| ----- | -------- | ----------------------------------------- |
+| FIVE  | 5:00     | RRS 26 (5-4-1-0)                          |
+| THREE | 3:00     | club dinghy start (3-2-1-0, every minute) |
 
 Mode is toggled by tapping the top zone while Idle, or pre-armed via the tile. Toggling is
 impossible once a sequence runs.
@@ -47,11 +47,11 @@ timer against any gun/signal without restarting the sequence.
 
 ## 4. Controls (wet-first design)
 
-| Phase | Top half tap | Bottom half tap | Long-press (~500 ms) |
-|---|---|---|---|
-| Idle | toggle 5:00/3:00 | START | — |
-| Countdown | SYNC | (nothing) | bottom: RESET |
-| CountUp | (nothing) | (nothing) | anywhere: RESET |
+| Phase     | Top half tap     | Bottom half tap | Long-press (~500 ms) |
+| --------- | ---------------- | --------------- | -------------------- |
+| Idle      | toggle 5:00/3:00 | START           | —                    |
+| Countdown | SYNC             | (nothing)       | bottom: RESET        |
+| CountUp   | (nothing)        | (nothing)       | anywhere: RESET      |
 
 - Half-screen zones because wet fingers can't hit small buttons.
 - Reset requires a deliberate long-press so splashes can't kill a sequence; it double-buzzes.
@@ -62,16 +62,16 @@ timer against any gun/signal without restarting the sequence.
 
 ## 5. Haptic vocabulary (no audio — watch speakers are useless on the water)
 
-| Event | Feel |
-|---|---|
-| Button press (start/sync/toggle) | light click (EFFECT_CLICK) |
-| 4:00 — preparatory (FIVE mode only) | double buzz (250 ms × 2) |
-| 2:00 (THREE mode only) | single buzz (500 ms) |
-| 1:00 — one-minute (both modes) | one long buzz (700 ms) |
-| 10…6 s | light tick each second (EFFECT_TICK) |
-| 5…1 s | heavy click each second (EFFECT_HEAVY_CLICK) — stage change marks "five to go" |
-| 0:00 — gun | short+long double blast (400 ms, 150 ms gap, 800 ms) |
-| Reset confirm | double pulse (80 ms × 2) |
+| Event                               | Feel                                                                           |
+| ----------------------------------- | ------------------------------------------------------------------------------ |
+| Button press (start/sync/toggle)    | light click (EFFECT_CLICK)                                                     |
+| 4:00 — preparatory (FIVE mode only) | double buzz (250 ms × 2)                                                       |
+| 2:00 (THREE mode only)              | single buzz (500 ms)                                                           |
+| 1:00 — one-minute (both modes)      | one long buzz (700 ms)                                                         |
+| 10…6 s                              | light tick each second (EFFECT_TICK)                                           |
+| 5…1 s                               | heavy click each second (EFFECT_HEAVY_CLICK) — stage change marks "five to go" |
+| 0:00 — gun                          | short+long double blast (400 ms, 150 ms gap, 800 ms)                           |
+| Reset confirm                       | double pulse (80 ms × 2)                                                       |
 
 FIVE mode is deliberately **silent at 3:00 and 2:00** — no real signal exists there (RRS 26),
 and phantom buzzes could be mistaken for signals. Cues are edge-triggered on the displayed
@@ -80,11 +80,11 @@ ramp) because discrete stage changes are countable on the wrist; amplitude ramps
 
 ## 6. Screen policy
 
-| Phase | Behavior |
-|---|---|
-| Idle | screen held full-on; released silently after **10 min without any tap** (battery guard); any tap re-holds |
+| Phase     | Behavior                                                                                                                      |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Idle      | screen held full-on; released silently after **10 min without any tap** (battery guard); any tap re-holds                     |
 | Countdown | screen held full-on, always (≤5 min, bounded); partial wake lock for the duration so ticking + haptics survive forced ambient |
-| CountUp | screen released; ambient always-on display takes over |
+| CountUp   | screen released; ambient always-on display takes over                                                                         |
 
 **Wet-forced ambient is a first-class case**: water triggers the palm gesture and forces
 ambient at any time. In ambient: Idle/Countdown render the same layout dimmed (gray digits,
@@ -105,10 +105,11 @@ works across reboots. Single source of validity: `RaceStore.activeRace()`.
 ## 8. Tile
 
 Swipe-accessible from the watch face. Two states, driven by the same persisted race record:
+
 - **Nothing running**: "REGATTA" + two chips (5 min / 3 min) that open the app pre-armed in
   that mode (never disturbs a running sequence if raced past them).
 - **Timer in flight**: status line (COUNTDOWN or RACING, green) + single "Open" chip.
-The app requests a tile refresh on every phase transition.
+  The app requests a tile refresh on every phase transition.
 
 ## 9. Visual language
 

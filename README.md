@@ -28,16 +28,16 @@ A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 
 
 ### The app
 
-| Armed | Countdown | Wet (ambient) | Race |
-|---|---|---|---|
+| Armed                                | Countdown                                    | Wet (ambient)                            | Race                                      |
+| ------------------------------------ | -------------------------------------------- | ---------------------------------------- | ----------------------------------------- |
 | ![Armed](docs/screenshots/armed.png) | ![Countdown](docs/screenshots/countdown.png) | ![Ambient](docs/screenshots/ambient.png) | ![Count-up](docs/screenshots/countup.png) |
 
 ### The tile
 
 Swipe from the watch face. When a timer is in flight the tile says so instead of offering to arm a new one.
 
-| Ready to arm | Timer in flight |
-|---|---|
+| Ready to arm                                   | Timer in flight                                    |
+| ---------------------------------------------- | -------------------------------------------------- |
 | ![Tile armed](docs/screenshots/tile_armed.png) | ![Tile running](docs/screenshots/tile_running.png) |
 
 ## Install (sideload)
