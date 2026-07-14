@@ -77,14 +77,18 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---- Persistence ---------------------------------------------------------
 
+    /** Refresh the tile so it reflects running/armed state promptly. */
+    private fun updateTile() =
+        androidx.wear.tiles.TileService.getUpdater(getApplication())
+            .requestUpdate(RegattaTileService::class.java)
+
     /** Restore an in-flight race after process death or reboot (silent — no gun haptic). */
     private fun restorePersistedRace() {
-        val p = raceStore.load() ?: return
-        val nowWall = System.currentTimeMillis()
-        if (nowWall - p.savedAtMs > MAX_RESTORE_AGE_MS) {
-            raceStore.clear()
+        val p = raceStore.activeRace() ?: run {
+            raceStore.clear() // drop anything expired
             return
         }
+        val nowWall = System.currentTimeMillis()
         val nowElapsed = SystemClock.elapsedRealtime()
         when (p.phase) {
             "COUNTDOWN" -> {
@@ -104,6 +108,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
                 startTicker()
             }
         }
+        updateTile() // phase may have advanced (gun fired while dead)
     }
 
     // ---- User actions -------------------------------------------------------
@@ -139,6 +144,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             _screenHold.value = true
             holdWakeLock(st.mode.durationMs)
             raceStore.saveCountdown(st.mode, System.currentTimeMillis() + st.mode.durationMs)
+            updateTile()
             startTicker()
         }
     }
@@ -172,6 +178,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             releaseWakeLock()
             ticker?.cancel()
             raceStore.clear()
+            updateTile()
             noteInteraction()
         }
     }
@@ -200,6 +207,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
         // Derive the gun's wall-clock time from the elapsedRealtime anchor.
         val gunWall = System.currentTimeMillis() - (SystemClock.elapsedRealtime() - countUp.zero)
         raceStore.saveCountUp(countUp.mode, gunWall)
+        updateTile()
     }
 
     private fun startTicker() {
@@ -244,7 +252,6 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
 
     private companion object {
         const val IDLE_SCREEN_HOLD_MS = 10 * 60_000L
-        const val MAX_RESTORE_AGE_MS = 12 * 60 * 60_000L
     }
 
     // LAST in the class: init runs in declaration order, and restoring a race touches
@@ -264,7 +271,8 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             sec == 240L && mode == Mode.FIVE -> haptics.prep()
             sec == 60L -> haptics.oneMinute()
             sec % 60 == 0L && sec > 60 && mode == Mode.THREE -> haptics.minute()
-            sec in 1..10 -> haptics.tick()
+            sec in 6..10 -> haptics.tick()
+            sec in 1..5 -> haptics.heavyTick() // two-stage ramp: heavier from "five to go"
         }
     }
 }

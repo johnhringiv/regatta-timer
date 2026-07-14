@@ -28,6 +28,20 @@ class RaceStore(context: Context) {
         return Persisted(phase, mode, prefs.getLong("wall", 0L), prefs.getLong("savedAt", 0L))
     }
 
+    /**
+     * The persisted race, or null if none / expired. Single source of validity for both
+     * the ViewModel restore and the tile's running-state display.
+     */
+    fun activeRace(maxAgeMs: Long = MAX_AGE_MS): Persisted? {
+        val p = load() ?: return null
+        if (System.currentTimeMillis() - p.savedAtMs > maxAgeMs) return null
+        return p
+    }
+
+    companion object {
+        const val MAX_AGE_MS = 12 * 60 * 60_000L
+    }
+
     private fun save(phase: String, mode: Mode, wallMs: Long) {
         prefs.edit()
             .putString("phase", phase)
