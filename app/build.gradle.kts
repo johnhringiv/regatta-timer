@@ -21,8 +21,8 @@ android {
         targetSdk = 36
         // versionCode bumps on every feature-branch change (CI-enforced > main).
         // versionName bumps once per PR to main (CI-enforced).
-        versionCode = 11
-        versionName = "0.5"
+        versionCode = 12
+        versionName = "0.6"
     }
 
     signingConfigs {
