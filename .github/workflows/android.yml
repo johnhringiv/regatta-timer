@@ -116,7 +116,12 @@ jobs:
           # mapping.txt deobfuscates crash traces from this exact build (R8 renames
           # differ per compile); open source, so publishing it costs nothing.
           mv mapping.txt "mapping-v${vn}.txt"
+          # The squash commit body IS the changelog (repo squashes with PR_BODY).
+          notes=$(git log -1 --format=%b)
           gh release create "v${vn}" "RegattaTimer-v${vn}.apk" "mapping-v${vn}.txt" \
             --title "Regatta Timer v${vn}" \
-            --notes "versionCode ${vc}. Sideload: see README." \
+            --notes "${notes}
+
+---
+versionCode ${vc} · sideload instructions in the README" \
             || echo "Release v${vn} already exists; skipping."
