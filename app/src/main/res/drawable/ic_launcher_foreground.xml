@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Burgee (racing pennant) with a stopwatch.
+    Burgee (racing pennant, flying right) containing a stopwatch.
     Colors follow the johnhringiv.com burgee favicon: gold #F5C518 / green #0B6B3A.
     Stopwatch glyph from Bootstrap Icons (MIT) — https://icons.getbootstrap.com/icons/stopwatch/
 -->
@@ -9,19 +9,19 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- pennant -->
+    <!-- pennant: hoist on the left, apex flying right -->
     <path
-        android:pathData="M28,30 L80,30 L54,79 Z"
+        android:pathData="M28,26 L28,78 L82,52 Z"
         android:fillColor="#F5C518"
         android:strokeColor="#0B6B3A"
         android:strokeWidth="5"
         android:strokeLineJoin="round" />
-    <!-- stopwatch, 16x16 glyph scaled and centered on the pennant -->
+    <!-- stopwatch centered on the pennant's centroid, fully inside the flag -->
     <group
-        android:scaleX="1.8"
-        android:scaleY="1.8"
-        android:translateX="39.6"
-        android:translateY="33">
+        android:scaleX="1.4"
+        android:scaleY="1.4"
+        android:translateX="34.8"
+        android:translateY="39.4">
         <path
             android:pathData="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5z"
             android:fillColor="#0B6B3A" />
