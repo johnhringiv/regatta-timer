@@ -94,13 +94,16 @@ fun TimerScreen(
                 else -> Digits
             }
             val labelColor = if (isAmbient) DimLabel else ZoneLabel
-            val topLabel = when (state) {
-                is TimerState.Idle -> "tap → ${state.mode.other().label()}"
-                is TimerState.Countdown -> "SYNC"
-                is TimerState.CountUp -> ""
+            // Touch is not delivered in ambient — never advertise buttons that can't work.
+            val topLabel = when {
+                isAmbient -> ""
+                state is TimerState.Idle -> "tap → ${state.mode.other().label()}"
+                state is TimerState.Countdown -> "SYNC"
+                else -> ""
             }
-            val bottomLabel = when (state) {
-                is TimerState.Idle -> "START"
+            val bottomLabel = when {
+                isAmbient -> "rotate crown to wake"
+                state is TimerState.Idle -> "START"
                 else -> "hold to reset"
             }
 
