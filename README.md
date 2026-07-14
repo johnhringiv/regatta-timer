@@ -22,9 +22,19 @@ A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 
 - **Survives interruptions**: an in-flight countdown or race is restored at the correct time even if the app is closed — or the watch reboots
 - **Battery guard**: an armed timer releases the screen after 10 idle minutes (any tap re-arms it); the countdown itself always holds the screen
 
-| Armed | Countdown | Wet (ambient) | Race | Tile |
-|---|---|---|---|---|
-| ![Armed](docs/screenshots/armed.png) | ![Countdown](docs/screenshots/countdown.png) | ![Ambient](docs/screenshots/ambient.png) | ![Count-up](docs/screenshots/countup.png) | ![Tile](docs/screenshots/tile.png) |
+### The app
+
+| Armed | Countdown | Wet (ambient) | Race |
+|---|---|---|---|
+| ![Armed](docs/screenshots/armed.png) | ![Countdown](docs/screenshots/countdown.png) | ![Ambient](docs/screenshots/ambient.png) | ![Count-up](docs/screenshots/countup.png) |
+
+### The tile
+
+Swipe from the watch face. When a timer is in flight the tile says so instead of offering to arm a new one.
+
+| Ready to arm | Timer in flight |
+|---|---|
+| ![Tile armed](docs/screenshots/tile_armed.png) | ![Tile running](docs/screenshots/tile_running.png) |
 
 ## Install (sideload)
 
