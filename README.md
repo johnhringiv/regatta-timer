@@ -10,6 +10,10 @@
 
 A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 3). Fully standalone — no phone, no companion app, no account, no network. Built because nothing on the market handled a real start line: the screen must never leave the timer mid-sequence, and a missed start press must be correctable at the next gun.
 
+<p align="center">
+  <img src="docs/demo.gif" width="240" alt="The final seconds: amber countdown, the gun, automatic green count-up" />
+</p>
+
 ## Features
 
 - **5-minute (RRS 26) and 3-minute start sequences**
