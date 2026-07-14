@@ -117,11 +117,9 @@ jobs:
           # differ per compile); open source, so publishing it costs nothing.
           mv mapping.txt "mapping-v${vn}.txt"
           # The squash commit body IS the changelog (repo squashes with PR_BODY).
-          notes=$(git log -1 --format=%b)
+          git log -1 --format=%b > notes.md
+          printf '\n---\nversionCode %s · sideload instructions in the README\n' "${vc}" >> notes.md
           gh release create "v${vn}" "RegattaTimer-v${vn}.apk" "mapping-v${vn}.txt" \
             --title "Regatta Timer v${vn}" \
-            --notes "${notes}
-
----
-versionCode ${vc} · sideload instructions in the README" \
+            --notes-file notes.md \
             || echo "Release v${vn} already exists; skipping."
