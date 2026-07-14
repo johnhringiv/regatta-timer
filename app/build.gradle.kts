@@ -12,16 +12,16 @@ val keystoreProps = Properties().apply {
 }
 
 android {
-    namespace = "com.johnh.regattatimer"
+    namespace = "com.johnhringiv.regattatimer"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.johnh.regattatimer"
+        applicationId = "com.johnhringiv.regattatimer"
         minSdk = 34
         targetSdk = 36
         // versionCode bumps on every feature-branch change (CI-enforced > main).
         // versionName bumps once per PR to main (CI-enforced).
-        versionCode = 13
+        versionCode = 14
         versionName = "0.6"
     }
 

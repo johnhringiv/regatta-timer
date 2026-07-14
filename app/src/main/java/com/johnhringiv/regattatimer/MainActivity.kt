@@ -1,4 +1,4 @@
-package com.johnh.regattatimer
+package com.johnhringiv.regattatimer
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +13,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.wear.ambient.AmbientLifecycleObserver
-import com.johnh.regattatimer.ui.TimerScreen
+import com.johnhringiv.regattatimer.ui.TimerScreen
 
 /** Intent extra (set by the tile) naming the [Mode] to arm on launch. */
 const val EXTRA_MODE = "mode"

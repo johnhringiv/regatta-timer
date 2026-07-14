@@ -1,4 +1,4 @@
-package com.johnh.regattatimer.ui
+package com.johnhringiv.regattatimer.ui
 
 import android.os.SystemClock
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
-import com.johnh.regattatimer.Mode
-import com.johnh.regattatimer.TimerState
-import com.johnh.regattatimer.formatMmSs
+import com.johnhringiv.regattatimer.Mode
+import com.johnhringiv.regattatimer.TimerState
+import com.johnhringiv.regattatimer.formatMmSs
 
 private val Digits = Color(0xFFF5F5F5)
 private val Amber = Color(0xFFFFB300)
