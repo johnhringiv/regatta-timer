@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regatta Timer — race start timer for Wear OS</title>
+  <meta name="description" content="Standalone sailing race start timer for Wear OS. 5 and 3 minute sequences, sync to the gun, haptic signals, works wet. No phone required.">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="logo.svg" alt="" width="96" height="90">
+    <h1>Regatta Timer</h1>
+    <p class="tagline">A sailing race start timer for Wear OS.<br>No phone. No account. No excuses at the gun.</p>
+    <p>
+      <a class="btn primary" href="https://github.com/johnhringiv/regatta-timer/releases/latest">Download APK</a>
+      <a class="btn" href="https://github.com/johnhringiv/regatta-timer">GitHub</a>
+    </p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Why it exists</h2>
+      <p>Generic watch timers fail on a start line: the screen falls back to the watch face mid-sequence, wet fingers can't hit small buttons, and a missed start press can't be corrected. Regatta Timer is built around the three things that matter: <strong>the display never leaves the timer</strong>, <strong>everything works wet</strong>, and <strong>sync fixes your timing at the next gun</strong>.</p>
+    </section>
+
+    <section>
+      <h2>Features</h2>
+      <ul class="features">
+        <li><strong>5-minute (RRS 26) &amp; 3-minute sequences</strong> — toggle with a tap while armed</li>
+        <li><strong>Sync to nearest minute</strong> — tap at any gun: 3:22 → 3:00, 3:40 → 4:00</li>
+        <li><strong>Automatic count-up</strong> after the start for elapsed race time</li>
+        <li><strong>Haptic signals</strong> — double buzz at 4:00, long buzz at 1:00, ticks through the last 10&nbsp;s, gun blast at 0:00</li>
+        <li><strong>Wet-proof</strong> — countdown, display, and buzzes continue even when water forces ambient mode; half-screen touch targets; reset needs a deliberate long-press</li>
+        <li><strong>Quick-launch tile</strong> — swipe from the watch face, tap 5&nbsp;min or 3&nbsp;min, pre-armed</li>
+        <li><strong>Fully standalone</strong> — no companion app, no network, ~2&nbsp;MB</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>On the wrist</h2>
+      <div class="shots">
+        <figure><img src="screenshots/armed.png" alt="Armed at 5:00"><figcaption>Armed</figcaption></figure>
+        <figure><img src="screenshots/countdown.png" alt="Counting down"><figcaption>Countdown</figcaption></figure>
+        <figure><img src="screenshots/ambient.png" alt="Live countdown continues in ambient mode when wet"><figcaption>Wet / ambient</figcaption></figure>
+        <figure><img src="screenshots/countup.png" alt="Race count-up"><figcaption>Race</figcaption></figure>
+        <figure><img src="screenshots/tile.png" alt="Quick-launch tile"><figcaption>Tile</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="beta">
+      <h2>🙋 Beta testers wanted</h2>
+      <p>Google Play requires <strong>12 testers for 14 days</strong> before a new personal developer account can publish. If you own a Wear&nbsp;OS watch and are willing to run the beta for two weeks, <a href="https://github.com/johnhringiv/regatta-timer/issues/new?title=Beta+tester">open an issue</a> with your Play Store email — sailors especially welcome.</p>
+    </section>
+
+    <section>
+      <h2>Install (sideload)</h2>
+      <ol>
+        <li>Download the APK from <a href="https://github.com/johnhringiv/regatta-timer/releases/latest">the latest release</a>.</li>
+        <li>On the watch: Settings → System → About → tap <em>Build number</em> ×7, then Developer options → enable <em>ADB debugging</em> + <em>Wireless debugging</em>.</li>
+        <li>Pair once: <code>adb pair &lt;ip&gt;:&lt;pair-port&gt; &lt;code&gt;</code> (from “Pair new device”).</li>
+        <li>Install: <code>adb connect &lt;ip&gt;:&lt;port&gt;</code> then <code>adb install RegattaTimer-v*.apk</code>.</li>
+      </ol>
+      <p>Needs Wear OS 5+. Full instructions in the <a href="https://github.com/johnhringiv/regatta-timer#install-sideload">README</a>.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 <a href="https://johnhringiv.com">John H. Ring IV</a> · <a href="https://github.com/johnhringiv/regatta-timer/blob/main/LICENSE">GPL-3.0-or-later</a></p>
+  </footer>
+</body>
+</html>

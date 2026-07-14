@@ -1,0 +1,36 @@
+name: Beta tester signup
+description: Join the closed test so Regatta Timer can ship on Google Play
+title: "Beta tester: <your name or handle>"
+labels: [beta-tester]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping get Regatta Timer onto Google Play! Google requires 12 testers
+        enrolled for 14 continuous days before a new personal developer account can publish.
+        You'll get an opt-in link once the closed test opens.
+  - type: input
+    id: play-email
+    attributes:
+      label: Play Store email
+      description: The Google account email you use on the Play Store (needed to add you to the closed test).
+      placeholder: you@gmail.com
+    validations:
+      required: true
+  - type: input
+    id: watch
+    attributes:
+      label: Watch model
+      placeholder: e.g. Pixel Watch 2, Galaxy Watch 6
+    validations:
+      required: true
+  - type: dropdown
+    id: sailor
+    attributes:
+      label: Do you sail?
+      options:
+        - Yes — I race
+        - Yes — casually
+        - No, just helping out
+    validations:
+      required: true
