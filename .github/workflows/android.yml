@@ -74,6 +74,12 @@ jobs:
           name: RegattaTimer-apk
           path: app/build/outputs/apk/release/app-release.apk
 
+      - name: Upload R8 mapping artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: r8-mapping
+          path: app/build/outputs/mapping/release/mapping.txt
+
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
@@ -87,7 +93,11 @@ jobs:
         with:
           name: RegattaTimer-apk
 
-      - name: Create GitHub release with APK
+      - uses: actions/download-artifact@v8
+        with:
+          name: r8-mapping
+
+      - name: Create GitHub release with APK + mapping
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -95,7 +105,10 @@ jobs:
           vn=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts)
           vc=$(grep -oP 'versionCode = \K\d+' app/build.gradle.kts)
           mv app-release.apk "RegattaTimer-v${vn}.apk"
-          gh release create "v${vn}" "RegattaTimer-v${vn}.apk" \
+          # mapping.txt deobfuscates crash traces from this exact build (R8 renames
+          # differ per compile); open source, so publishing it costs nothing.
+          mv mapping.txt "mapping-v${vn}.txt"
+          gh release create "v${vn}" "RegattaTimer-v${vn}.apk" "mapping-v${vn}.txt" \
             --title "Regatta Timer v${vn}" \
             --notes "versionCode ${vc}. Sideload: see README." \
             || echo "Release v${vn} already exists; skipping."
