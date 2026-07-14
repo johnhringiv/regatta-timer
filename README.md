@@ -71,6 +71,12 @@ I want to publish this to Google Play so nobody has to sideload — but Google r
 
 Requires JDK 17+ and the Android SDK (compileSdk 37). Release signing reads `keystore.properties` at the repo root (gitignored); CI restores it from the `KEYSTORE_B64` / `KEYSTORE_PASSWORD` secrets.
 
+After cloning, enable the repo hooks (auto-formats Markdown with Prettier on commit; CI enforces):
+
+```
+git config core.hooksPath .githooks
+```
+
 ## Versioning
 
 - **`versionCode`** (integer) — bumped on **every change** pushed to a feature branch; CI rejects PRs where it hasn't increased past `main`.

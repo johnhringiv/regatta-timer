@@ -40,6 +40,14 @@ jobs:
           fi
           echo "Version bump OK."
 
+  docs-format:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Prettier check on Markdown
+        run: npx --yes prettier --check "**/*.md"
+
   build:
     runs-on: ubuntu-latest
     env:
