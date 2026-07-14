@@ -13,17 +13,17 @@
     android:viewportHeight="108">
     <!-- pennant: hoist on the left, apex flying right -->
     <path
-        android:pathData="M30,36 L30,72 L84,54 Z"
+        android:pathData="M34,31 L34,77 L84,54 Z"
         android:fillColor="#F5C518"
         android:strokeColor="#0B6B3A"
         android:strokeWidth="4"
         android:strokeLineJoin="round" />
-    <!-- stopwatch centered on the pennant's centroid (48,54), fully inside the flag -->
+    <!-- stopwatch centered on the pennant's centroid (50.7,54), fully inside the flag -->
     <group
-        android:scaleX="1.25"
-        android:scaleY="1.25"
-        android:translateX="38"
-        android:translateY="42.75">
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:translateX="38.67"
+        android:translateY="40.5">
         <path
             android:pathData="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5z"
             android:fillColor="#0B6B3A" />
