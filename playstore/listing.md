@@ -73,8 +73,7 @@ FEATURES
 
 ## Assets checklist
 
-- [x] App icon 512×512 PNG — `playstore/icon-512.png`
-- [x] Feature graphic 1024×500 PNG — `playstore/feature-graphic.png`
+- [x] App icon 512×512 + feature graphic 1024×500 — run `playstore/generate-assets.ps1` (gitignored outputs; regenerate on upload day)
 - [x] Wear OS screenshots (1:1, ≥384px) — `docs/screenshots/*.png` (armed, countdown, ambient, countup, tile_armed, tile_running)
 - [ ] Closed-test tester list — collect via the beta-tester issue form
 - [ ] Upload `.aab` (`gradlew :app:bundleRelease`), enroll in Play App Signing on first upload

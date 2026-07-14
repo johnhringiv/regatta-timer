@@ -1,6 +1,9 @@
-# Regenerates docs/og-image.png (1200x630) and playstore/feature-graphic.png (1024x500)
-# from docs/logo.svg + docs/screenshots/countdown.png. Both banners share one layout;
-# the two files exist because Play requires exactly 1024x500 and OG wants 1200x630.
+# Regenerates all derived marketing assets from committed sources
+# (docs/logo.svg + docs/screenshots/countdown.png):
+#   docs/og-image.png              1200x630  (committed — the live site serves it)
+#   playstore/feature-graphic.png  1024x500  (gitignored — regenerate for Play upload)
+#   playstore/icon-512.png         512x512   (gitignored — regenerate for Play upload)
+# The two banner sizes are hard external requirements (OG standard vs Play's exact spec).
 # Requires Microsoft Edge (SVG rasterization) — no other dependencies.
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
@@ -54,6 +57,20 @@ function New-Banner($W, $H, $outPath, $titleSize, $tagSize, $subSize, $titleY, $
     Write-Output "wrote $outPath"
 }
 
-# 3. Both outputs from the shared layout
+# 3. Both banners from the shared layout
 New-Banner 1200 630 (Join-Path $repo 'docs\og-image.png')            68 30 24 130 265 330 190 48 415 430 700 100
 New-Banner 1024 500 (Join-Path $repo 'playstore\feature-graphic.png') 56 26 20  96 205 262 150 44 330 380 590  60
+
+# 4. Play icon: logo on the launcher background color, 512x512
+@"
+<!doctype html><html><head><style>
+html,body{margin:0;padding:0;width:512px;height:512px;background:#FAFAF5;overflow:hidden}
+div{width:512px;height:512px;display:flex;align-items:center;justify-content:center}
+img{width:420px;height:420px}
+</style></head><body><div><img src="file:///$logoSvg"></div></body></html>
+"@ | Out-File -Encoding utf8 (Join-Path $tmp 'icon.html')
+$iconOut = Join-Path $repo 'playstore\icon-512.png'
+& $edge --headless=new --disable-gpu --screenshot="$iconOut" --window-size=512,512 `
+    --default-background-color=FFFAFAF5 "file:///$($tmp -replace '\\','/')/icon.html" 2>$null
+Start-Sleep 2
+Write-Output "wrote $iconOut"
