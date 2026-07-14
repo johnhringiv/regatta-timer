@@ -1,4 +1,4 @@
-package com.johnh.regattatimer
+package com.johnhringiv.regattatimer
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

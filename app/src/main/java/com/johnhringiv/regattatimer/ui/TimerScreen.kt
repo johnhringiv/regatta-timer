@@ -1,4 +1,4 @@
-package com.johnh.regattatimer.ui
+package com.johnhringiv.regattatimer.ui
 
 import android.os.SystemClock
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -24,16 +24,16 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
-import com.johnh.regattatimer.Mode
-import com.johnh.regattatimer.TimerState
-import com.johnh.regattatimer.formatMmSs
+import com.johnhringiv.regattatimer.Mode
+import com.johnhringiv.regattatimer.TimerState
+import com.johnhringiv.regattatimer.formatMmSs
 
 private val Digits = Color(0xFFF5F5F5)
 private val Amber = Color(0xFFFFB300)
 private val Green = Color(0xFF4CAF50)
 private val DimGray = Color(0xFF9E9E9E)
 private val DimLabel = Color(0xFF6E6E6E)
-private val ZoneLabel = Color(0xFF7FA6C9)
+private val ZoneLabel = Color(0xFFF5C518) // burgee gold
 
 private fun Mode.label() = formatMmSs(durationSeconds)
 
@@ -48,6 +48,7 @@ fun TimerScreen(
     onStart: () -> Unit,
     onSync: () -> Unit,
     onReset: () -> Unit,
+    onAnyTap: () -> Unit = {},
 ) {
     MaterialTheme {
         if (isAmbient && state is TimerState.CountUp) {
@@ -66,6 +67,7 @@ fun TimerScreen(
                         .fillMaxWidth()
                         .combinedClickable(
                             onClick = {
+                                onAnyTap() // any tap re-arms the idle screen guard
                                 when (state) {
                                     is TimerState.Idle -> onToggleMode()
                                     is TimerState.Countdown -> onSync()
@@ -80,7 +82,10 @@ fun TimerScreen(
                         .weight(1f)
                         .fillMaxWidth()
                         .combinedClickable(
-                            onClick = { if (state is TimerState.Idle) onStart() },
+                            onClick = {
+                                onAnyTap()
+                                if (state is TimerState.Idle) onStart()
+                            },
                             onLongClick = if (state !is TimerState.Idle) onReset else null,
                         )
                 )

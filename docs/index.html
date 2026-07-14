@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Regatta Timer — race start timer for Wear OS</title>
   <meta name="description" content="Standalone sailing race start timer for Wear OS. 5 and 3 minute sequences, sync to the gun, haptic signals, works wet. No phone required.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Regatta Timer — race start timer for Wear OS">
+  <meta property="og:description" content="Standalone sailing race start timer for Wear OS. 5 and 3 minute sequences, sync to the gun, haptic signals, works wet. No phone required.">
+  <meta property="og:url" content="https://regatta-timer.johnhringiv.com/">
+  <meta property="og:image" content="https://regatta-timer.johnhringiv.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="logo.svg">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -34,18 +42,32 @@
         <li><strong>Haptic signals</strong> — double buzz at 4:00, long buzz at 1:00, ticks through the last 10&nbsp;s, gun blast at 0:00</li>
         <li><strong>Wet-proof</strong> — countdown, display, and buzzes continue even when water forces ambient mode; half-screen touch targets; reset needs a deliberate long-press</li>
         <li><strong>Quick-launch tile</strong> — swipe from the watch face, tap 5&nbsp;min or 3&nbsp;min, pre-armed</li>
+        <li><strong>Survives interruptions</strong> — an in-flight countdown or race restores at the correct time even if the app closes or the watch reboots</li>
+        <li><strong>Battery guard</strong> — an armed timer releases the screen after 10 idle minutes; any tap re-arms it</li>
         <li><strong>Fully standalone</strong> — no companion app, no network, ~2&nbsp;MB</li>
       </ul>
     </section>
 
     <section>
       <h2>On the wrist</h2>
+      <p class="demo">
+        <video src="demo.mp4" width="240" autoplay loop muted playsinline
+          aria-label="The final seconds: amber countdown, the gun, automatic green count-up"></video>
+      </p>
       <div class="shots">
         <figure><img src="screenshots/armed.png" alt="Armed at 5:00"><figcaption>Armed</figcaption></figure>
         <figure><img src="screenshots/countdown.png" alt="Counting down"><figcaption>Countdown</figcaption></figure>
         <figure><img src="screenshots/ambient.png" alt="Live countdown continues in ambient mode when wet"><figcaption>Wet / ambient</figcaption></figure>
         <figure><img src="screenshots/countup.png" alt="Race count-up"><figcaption>Race</figcaption></figure>
-        <figure><img src="screenshots/tile.png" alt="Quick-launch tile"><figcaption>Tile</figcaption></figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>The tile</h2>
+      <p>Swipe from the watch face to arm a start in one tap. With a timer in flight, the tile says so instead of offering to arm a new one.</p>
+      <div class="shots">
+        <figure><img src="screenshots/tile_armed.png" alt="Tile ready to arm 5 or 3 minute start"><figcaption>Ready to arm</figcaption></figure>
+        <figure><img src="screenshots/tile_running.png" alt="Tile showing a countdown is in flight"><figcaption>Timer in flight</figcaption></figure>
       </div>
     </section>
 
@@ -67,7 +89,7 @@
   </main>
 
   <footer>
-    <p>© 2026 <a href="https://johnhringiv.com">John H. Ring IV</a> · <a href="https://github.com/johnhringiv/regatta-timer/blob/main/LICENSE">GPL-3.0-or-later</a></p>
+    <p>© 2026 <a href="https://johnhringiv.com">John H. Ring IV</a> · <a href="https://github.com/johnhringiv/regatta-timer/blob/main/LICENSE">GPL-3.0-or-later</a> · <a href="privacy.html">Privacy</a></p>
   </footer>
 </body>
 </html>

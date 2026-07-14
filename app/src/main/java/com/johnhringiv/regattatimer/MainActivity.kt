@@ -1,4 +1,4 @@
-package com.johnh.regattatimer
+package com.johnhringiv.regattatimer
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +13,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.wear.ambient.AmbientLifecycleObserver
-import com.johnh.regattatimer.ui.TimerScreen
+import com.johnhringiv.regattatimer.ui.TimerScreen
 
 /** Intent extra (set by the tile) naming the [Mode] to arm on launch. */
 const val EXTRA_MODE = "mode"
@@ -49,15 +49,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             val state by viewModel.state.collectAsState()
             val displaySeconds by viewModel.displaySeconds.collectAsState()
+            val screenHold by viewModel.screenHold.collectAsState()
 
-            // Armed + countdown: screen must never turn off or leave the app.
+            // Countdown: screen must never turn off or leave the app.
+            // Armed (Idle): held only until the 10-minute idle guard releases it.
             // Count-up: release the flag and let the always-on ambient display take over.
-            val inCountUp = state is TimerState.CountUp
-            LaunchedEffect(inCountUp) {
-                if (inCountUp) {
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                } else {
+            val holdScreen = when (state) {
+                is TimerState.Countdown -> true
+                is TimerState.Idle -> screenHold
+                is TimerState.CountUp -> false
+            }
+            LaunchedEffect(holdScreen) {
+                if (holdScreen) {
                     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                } else {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }
             }
 
@@ -70,6 +76,7 @@ class MainActivity : ComponentActivity() {
                 onStart = viewModel::start,
                 onSync = viewModel::sync,
                 onReset = viewModel::reset,
+                onAnyTap = viewModel::noteInteraction,
             )
         }
     }

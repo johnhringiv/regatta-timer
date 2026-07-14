@@ -1,4 +1,4 @@
-package com.johnh.regattatimer
+package com.johnhringiv.regattatimer
 
 import android.app.Application
 import android.content.Context
@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 class TimerViewModel(app: Application) : AndroidViewModel(app) {
 
     private val haptics = Haptics(app)
+    private val raceStore = RaceStore(app)
 
     private val _state = MutableStateFlow<TimerState>(TimerState.Idle(Mode.FIVE))
     val state: StateFlow<TimerState> = _state.asStateFlow()
@@ -25,7 +26,12 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
     private val _displaySeconds = MutableStateFlow(Mode.FIVE.durationSeconds)
     val displaySeconds: StateFlow<Long> = _displaySeconds.asStateFlow()
 
+    /** False once the armed screen has idled past the guard timeout (battery protection). */
+    private val _screenHold = MutableStateFlow(true)
+    val screenHold: StateFlow<Boolean> = _screenHold.asStateFlow()
+
     private var ticker: Job? = null
+    private var idleGuard: Job? = null
     private var inAmbient = false
 
     // Water on the screen triggers the palm gesture and forces ambient mode; a partial
@@ -52,6 +58,59 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
         releaseWakeLock()
     }
 
+    // ---- Idle battery guard --------------------------------------------------
+
+    /**
+     * Any tap (even a no-op) re-arms the keep-screen-on hold while Idle; after
+     * [IDLE_SCREEN_HOLD_MS] without interaction the hold is silently released and the
+     * normal system timeout dims to ambient. Countdown/CountUp are unaffected.
+     */
+    fun noteInteraction() {
+        if (_state.value !is TimerState.Idle) return
+        _screenHold.value = true
+        idleGuard?.cancel()
+        idleGuard = viewModelScope.launch {
+            delay(IDLE_SCREEN_HOLD_MS)
+            _screenHold.value = false
+        }
+    }
+
+    // ---- Persistence ---------------------------------------------------------
+
+    /** Refresh the tile so it reflects running/armed state promptly. */
+    private fun updateTile() =
+        androidx.wear.tiles.TileService.getUpdater(getApplication())
+            .requestUpdate(RegattaTileService::class.java)
+
+    /** Restore an in-flight race after process death or reboot (silent — no gun haptic). */
+    private fun restorePersistedRace() {
+        val p = raceStore.activeRace() ?: run {
+            raceStore.clear() // drop anything expired
+            return
+        }
+        val nowWall = System.currentTimeMillis()
+        val nowElapsed = SystemClock.elapsedRealtime()
+        when (p.phase) {
+            "COUNTDOWN" -> {
+                val remaining = p.wallMs - nowWall
+                if (remaining > 0) {
+                    _state.value = TimerState.Countdown(p.mode, nowElapsed + remaining)
+                    holdWakeLock(remaining)
+                } else {
+                    // The gun fired while we were dead; resume the race at the right time.
+                    _state.value = TimerState.CountUp(p.mode, nowElapsed - (nowWall - p.wallMs))
+                    raceStore.saveCountUp(p.mode, p.wallMs)
+                }
+                startTicker()
+            }
+            "COUNTUP" -> {
+                _state.value = TimerState.CountUp(p.mode, nowElapsed - (nowWall - p.wallMs))
+                startTicker()
+            }
+        }
+        updateTile() // phase may have advanced (gun fired while dead)
+    }
+
     // ---- User actions -------------------------------------------------------
 
     /** Arm a specific mode from the tile; never disturbs a running sequence. */
@@ -61,6 +120,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             _state.value = TimerState.Idle(mode)
             _displaySeconds.value = mode.durationSeconds
         }
+        noteInteraction()
     }
 
     fun toggleMode() {
@@ -70,6 +130,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             _state.value = TimerState.Idle(next)
             _displaySeconds.value = next.durationSeconds
             haptics.click()
+            noteInteraction()
         }
     }
 
@@ -79,7 +140,11 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             val now = SystemClock.elapsedRealtime()
             _state.value = TimerState.Countdown(st.mode, now + st.mode.durationMs)
             haptics.click()
+            idleGuard?.cancel()
+            _screenHold.value = true
             holdWakeLock(st.mode.durationMs)
+            raceStore.saveCountdown(st.mode, System.currentTimeMillis() + st.mode.durationMs)
+            updateTile()
             startTicker()
         }
     }
@@ -98,6 +163,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
                 _displaySeconds.value = newRemaining / 1000
                 haptics.click()
                 holdWakeLock(newRemaining)
+                raceStore.saveCountdown(st.mode, System.currentTimeMillis() + newRemaining)
             }
             startTicker()
         }
@@ -111,6 +177,9 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             haptics.resetConfirm()
             releaseWakeLock()
             ticker?.cancel()
+            raceStore.clear()
+            updateTile()
+            noteInteraction()
         }
     }
 
@@ -135,6 +204,10 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
         _displaySeconds.value = 0
         haptics.gun()
         releaseWakeLock()
+        // Derive the gun's wall-clock time from the elapsedRealtime anchor.
+        val gunWall = System.currentTimeMillis() - (SystemClock.elapsedRealtime() - countUp.zero)
+        raceStore.saveCountUp(countUp.mode, gunWall)
+        updateTile()
     }
 
     private fun startTicker() {
@@ -177,6 +250,17 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private companion object {
+        const val IDLE_SCREEN_HOLD_MS = 10 * 60_000L
+    }
+
+    // LAST in the class: init runs in declaration order, and restoring a race touches
+    // most properties above (state flows, wake lock, ticker).
+    init {
+        restorePersistedRace()
+        noteInteraction()
+    }
+
     /**
      * Edge-triggered on the displayed-second value, so a sync can't double-fire or skip cues.
      * Cues mirror the actual signals: RRS 26 (5-4-1-0) in 5-minute mode — silent at 3:00/2:00;
@@ -187,7 +271,8 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             sec == 240L && mode == Mode.FIVE -> haptics.prep()
             sec == 60L -> haptics.oneMinute()
             sec % 60 == 0L && sec > 60 && mode == Mode.THREE -> haptics.minute()
-            sec in 1..10 -> haptics.tick()
+            sec in 6..10 -> haptics.tick()
+            sec in 1..5 -> haptics.heavyTick() // two-stage ramp: heavier from "five to go"
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.johnh.regattatimer
+package com.johnhringiv.regattatimer
 
 import java.util.Locale
 

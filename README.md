@@ -6,9 +6,13 @@
 
 [![Android](https://github.com/johnhringiv/regatta-timer/actions/workflows/android.yml/badge.svg)](https://github.com/johnhringiv/regatta-timer/actions/workflows/android.yml)
 
-**[→ regatta-timer website](https://johnhringiv.github.io/regatta-timer/)**
+**[→ regatta-timer.johnhringiv.com](https://regatta-timer.johnhringiv.com/)**
 
 A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 3). Fully standalone — no phone, no companion app, no account, no network. Built because nothing on the market handled a real start line: the screen must never leave the timer mid-sequence, and a missed start press must be correctable at the next gun.
+
+<p align="center">
+  <img src="docs/demo.gif" width="240" alt="The final seconds: amber countdown, the gun, automatic green count-up" />
+</p>
 
 ## Features
 
@@ -19,10 +23,22 @@ A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 
 - **Screen never leaves the app** while armed or counting down; count-up dims to an always-on ambient display
 - **Wet-proof**: countdown, display, and haptics keep running even when water forces the watch into ambient mode; huge half-screen touch targets; long-press-guarded reset so splashes can't kill your sequence
 - **Quick-launch tile**: swipe from the watch face, tap 5 min or 3 min, and the timer opens pre-armed
+- **Survives interruptions**: an in-flight countdown or race is restored at the correct time even if the app is closed — or the watch reboots
+- **Battery guard**: an armed timer releases the screen after 10 idle minutes (any tap re-arms it); the countdown itself always holds the screen
 
-| Armed | Countdown | Wet (ambient) | Race | Tile |
-|---|---|---|---|---|
-| ![Armed](docs/screenshots/armed.png) | ![Countdown](docs/screenshots/countdown.png) | ![Ambient](docs/screenshots/ambient.png) | ![Count-up](docs/screenshots/countup.png) | ![Tile](docs/screenshots/tile.png) |
+### The app
+
+| Armed                                | Countdown                                    | Wet (ambient)                            | Race                                      |
+| ------------------------------------ | -------------------------------------------- | ---------------------------------------- | ----------------------------------------- |
+| ![Armed](docs/screenshots/armed.png) | ![Countdown](docs/screenshots/countdown.png) | ![Ambient](docs/screenshots/ambient.png) | ![Count-up](docs/screenshots/countup.png) |
+
+### The tile
+
+Swipe from the watch face. When a timer is in flight the tile says so instead of offering to arm a new one.
+
+| Ready to arm                                   | Timer in flight                                    |
+| ---------------------------------------------- | -------------------------------------------------- |
+| ![Tile armed](docs/screenshots/tile_armed.png) | ![Tile running](docs/screenshots/tile_running.png) |
 
 ## Install (sideload)
 
@@ -54,6 +70,12 @@ I want to publish this to Google Play so nobody has to sideload — but Google r
 ```
 
 Requires JDK 17+ and the Android SDK (compileSdk 37). Release signing reads `keystore.properties` at the repo root (gitignored); CI restores it from the `KEYSTORE_B64` / `KEYSTORE_PASSWORD` secrets.
+
+After cloning, enable the repo hooks (auto-formats Markdown with Prettier on commit; CI enforces):
+
+```
+git config core.hooksPath .githooks
+```
 
 ## Versioning
 

@@ -82,6 +82,16 @@ h2 {
 
 .shots figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 0.3rem; }
 
+.demo { text-align: center; }
+
+.demo video {
+  width: 220px;
+  max-width: 60%;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  background: #000;
+}
+
 #beta {
   background: #fff8dd;
   border: 2px solid var(--gold);

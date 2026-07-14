@@ -1,4 +1,4 @@
-package com.johnh.regattatimer
+package com.johnhringiv.regattatimer
 
 import android.content.Context
 import android.os.VibrationEffect
@@ -16,9 +16,13 @@ class Haptics(context: Context) {
     fun click() =
         vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
 
-    /** Short tick for each of the final 10 seconds. */
+    /** Short tick for final-countdown seconds 10..6. */
     fun tick() =
         vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK))
+
+    /** Stronger tick for the last five seconds — the stage change marks "five to go". */
+    fun heavyTick() =
+        vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK))
 
     /** Single buzz for intermediate minute signals (3-minute sequence). */
     fun minute() =
