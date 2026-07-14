@@ -6,7 +6,7 @@
 
 [![Android](https://github.com/johnhringiv/regatta-timer/actions/workflows/android.yml/badge.svg)](https://github.com/johnhringiv/regatta-timer/actions/workflows/android.yml)
 
-**[→ regatta-timer website](https://johnhringiv.github.io/regatta-timer/)**
+**[→ regatta-timer.johnhringiv.com](https://regatta-timer.johnhringiv.com/)**
 
 A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 3). Fully standalone — no phone, no companion app, no account, no network. Built because nothing on the market handled a real start line: the screen must never leave the timer mid-sequence, and a missed start press must be correctable at the next gun.
 
