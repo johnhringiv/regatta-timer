@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Burgee (racing pennant, flying right) containing a stopwatch.
+    All three pennant vertices sit exactly 30 units from the icon center (54,54),
+    so the shape is optically centered inside circular launcher masks (safe zone r=33).
     Colors follow the johnhringiv.com burgee favicon: gold #F5C518 / green #0B6B3A.
     Stopwatch glyph from Bootstrap Icons (MIT) — https://icons.getbootstrap.com/icons/stopwatch/
 -->
@@ -11,17 +13,17 @@
     android:viewportHeight="108">
     <!-- pennant: hoist on the left, apex flying right -->
     <path
-        android:pathData="M28,26 L28,78 L82,52 Z"
+        android:pathData="M30,36 L30,72 L84,54 Z"
         android:fillColor="#F5C518"
         android:strokeColor="#0B6B3A"
-        android:strokeWidth="5"
+        android:strokeWidth="4"
         android:strokeLineJoin="round" />
-    <!-- stopwatch centered on the pennant's centroid, fully inside the flag -->
+    <!-- stopwatch centered on the pennant's centroid (48,54), fully inside the flag -->
     <group
-        android:scaleX="1.4"
-        android:scaleY="1.4"
-        android:translateX="34.8"
-        android:translateY="39.4">
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:translateX="38"
+        android:translateY="42.75">
         <path
             android:pathData="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5z"
             android:fillColor="#0B6B3A" />
