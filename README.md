@@ -45,6 +45,10 @@ Swipe from the watch face. When a timer is in flight the tile says so instead of
 
 Put the timer in a watch-face complication slot: a ring where the dot is time remaining, a ticking countdown in the center, and a sailboat at the bottom (on faces that render ranged values, like the Pixel defaults). Armed, it shows the last-used sequence (`5m`/`3m`); one tap starts it with the app opening mid-count.
 
+<p align="center">
+  <img src="docs/demo-complication.gif" width="240" alt="The complication counting down: dot sweeping the ring as the text ticks" />
+</p>
+
 | Armed on the face                                              | Counting down                                                          |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | ![Complication armed](docs/screenshots/complication_armed.png) | ![Complication countdown](docs/screenshots/complication_countdown.png) |
