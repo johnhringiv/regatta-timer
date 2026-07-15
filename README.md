@@ -41,6 +41,12 @@ Swipe from the watch face. When a timer is in flight the tile says so instead of
 | ---------------------------------------------- | -------------------------------------------------- |
 | ![Tile armed](docs/screenshots/tile_armed.png) | ![Tile running](docs/screenshots/tile_running.png) |
 
+### The complication
+
+Put the timer in a watch-face complication slot: a ring where the dot is time remaining, a ticking countdown in the center, and a sailboat at the bottom (on faces that render ranged values, like the Pixel defaults). Armed, it shows the last-used sequence (`5m`/`3m`); one tap starts it with the app opening mid-count.
+
+**Worth knowing**: in always-on (ambient) display, watch faces refresh complications about once a minute, so the countdown on the *face* can read up to a minute stale until you turn your wrist — identical to the built-in stopwatch/timer complications. Inside the app, the countdown stays live to the second even in ambient.
+
 ## Install (sideload)
 
 Grab the APK from [Releases](https://github.com/johnhringiv/regatta-timer/releases), then:
