@@ -39,9 +39,10 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
         val type = request.complicationType
         if (type != ComplicationType.RANGED_VALUE && type != ComplicationType.SHORT_TEXT) return null
 
-        val configuredMode = ComplicationModeStore(this).mode(request.complicationInstanceId)
-        val race = RaceStore(this).activeRace()
-        val armed = armedData(type, configuredMode, request.complicationInstanceId)
+        val store = RaceStore(this)
+        val race = store.activeRace()
+        // Armed complications follow the last mode used anywhere (app, tile, complication).
+        val armed = armedData(type, store.lastMode(), request.complicationInstanceId)
 
         return when {
             race == null -> ComplicationDataTimeline(armed, emptyList())
@@ -102,7 +103,7 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
     // ---- State builders ------------------------------------------------------
 
     private fun armedData(type: ComplicationType, mode: Mode, instanceId: Int): ComplicationData {
-        val text = plain("SET")
+        val text = plain("${mode.durationSeconds / 60}m") // which sequence a tap starts
         val desc = plain("Regatta Timer armed, tap to start ${mode.durationSeconds / 60} minute sequence")
         val tap = startTap(mode, instanceId)
         return when (type) {
@@ -225,18 +226,6 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-}
-
-/** Per-complication-instance mode chosen in the config activity (default FIVE). */
-class ComplicationModeStore(context: Context) {
-    private val prefs = context.getSharedPreferences("complication_modes", Context.MODE_PRIVATE)
-
-    fun mode(instanceId: Int): Mode =
-        runCatching { Mode.valueOf(prefs.getString("mode_$instanceId", "") ?: "") }
-            .getOrDefault(Mode.FIVE)
-
-    fun setMode(instanceId: Int, mode: Mode) =
-        prefs.edit().putString("mode_$instanceId", mode.name).apply()
 
     companion object {
         fun component(context: Context) =

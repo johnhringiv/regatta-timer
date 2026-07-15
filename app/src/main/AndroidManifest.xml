@@ -47,20 +47,7 @@
             <meta-data
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
                 android:value="0" />
-            <meta-data
-                android:name="android.support.wearable.complications.PROVIDER_CONFIG_ACTION"
-                android:value="com.johnhringiv.regattatimer.COMPLICATION_CONFIG" />
         </service>
-
-        <activity
-            android:name=".ComplicationConfigActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.johnhringiv.regattatimer.COMPLICATION_CONFIG" />
-                <category android:name="android.support.wearable.complications.category.PROVIDER_CONFIG" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
 
         <service
             android:name=".RegattaTileService"

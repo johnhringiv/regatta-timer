@@ -19,7 +19,10 @@ class RaceStore(context: Context) {
     /** [gunWallMs]: wall-clock time the race started. */
     fun saveCountUp(mode: Mode, gunWallMs: Long) = save("COUNTUP", mode, gunWallMs)
 
-    fun clear() = prefs.edit().clear().apply()
+    /** Clears the persisted race but not the last-used mode. */
+    fun clear() = prefs.edit()
+        .remove("phase").remove("mode").remove("wall").remove("savedAt")
+        .apply()
 
     fun load(): Persisted? {
         val phase = prefs.getString("phase", null) ?: return null
@@ -41,6 +44,13 @@ class RaceStore(context: Context) {
     companion object {
         const val MAX_AGE_MS = 12 * 60 * 60_000L
     }
+
+    /** The last mode used anywhere (app toggle, tile, complication start). */
+    fun lastMode(): Mode =
+        runCatching { Mode.valueOf(prefs.getString("lastMode", "") ?: "") }
+            .getOrDefault(Mode.FIVE)
+
+    fun setLastMode(mode: Mode) = prefs.edit().putString("lastMode", mode.name).apply()
 
     private fun save(phase: String, mode: Mode, wallMs: Long) {
         prefs.edit()

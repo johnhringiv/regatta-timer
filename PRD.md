@@ -77,6 +77,8 @@ FIVE mode is deliberately **silent at 3:00 and 2:00** — no real signal exists 
 and phantom buzzes could be mistaken for signals. Cues are edge-triggered on the displayed
 second so a sync can never double-fire or skip them. Two-stage final count (not a gradual
 ramp) because discrete stage changes are countable on the wrist; amplitude ramps are not.
+The gun haptic is **timeliness-guarded**: it fires only within ~2 s of the real deadline —
+a frozen/cached process waking minutes late transitions to count-up silently.
 
 ## 6. Screen policy
 
@@ -115,11 +117,12 @@ Swipe-accessible from the watch face. Two states, driven by the same persisted r
 
 One-tap starts from the watch face itself. The complication supplies typed data; the face
 renders it (Pixel faces: weather-style ring + dot, center text, small icon at the bottom).
-Configured once when added to a face (5 or 3 minutes, per-instance); "SET" while armed.
+Arms **the last mode used anywhere** (app toggle, tile, or complication start) — no
+per-instance configuration; the armed label shows which sequence a tap starts.
 
 | State     | Ring (min 0, max duration)             | Center text        | Tap                       |
 | --------- | -------------------------------------- | ------------------ | ------------------------- |
-| Armed     | full                                   | "SET"              | open app **auto-started** |
+| Armed     | full                                   | "5m" / "3m"        | open app **auto-started** |
 | Countdown | dot sweeps (platform-evaluated, ~1 Hz) | ticking count-down | open app                  |
 | Count-up  | empty                                  | ticking count-up   | open app                  |
 
