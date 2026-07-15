@@ -27,6 +27,7 @@ A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 
 - **Watch-face complication**: weather-style ring where the dot is time remaining, ticking countdown in the center — one tap starts the last-used sequence right from the face
 - **Survives interruptions**: an in-flight countdown or race is restored at the correct time even if the app is closed — or the watch reboots
 - **Battery guard**: an armed timer releases the screen after 10 idle minutes (any tap re-arms it); the countdown itself always holds the screen
+- **Free, no ads, no tracking**: GPL open source; no account, no network, [no data collection](https://regatta-timer.johnhringiv.com/privacy.html) — about 2 MB
 
 ### The app
 
