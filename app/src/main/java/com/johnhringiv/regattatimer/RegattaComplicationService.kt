@@ -49,7 +49,9 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
 
             race.phase == "COUNTDOWN" -> {
                 val mode = race.mode
-                val deadline = Instant.ofEpochMilli(race.wallMs)
+                // Whole-second instant so the ticking text and the dot's dynamic value
+                // flip together on epoch-second boundaries (offset flips look jarring).
+                val deadline = wholeSecond(race.wallMs)
                 val expiry = Instant.ofEpochMilli(race.savedAtMs + RaceStore.MAX_AGE_MS)
                 ComplicationDataTimeline(
                     armed,
@@ -67,7 +69,7 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
             }
 
             else -> { // COUNTUP
-                val gun = Instant.ofEpochMilli(race.wallMs)
+                val gun = wholeSecond(race.wallMs)
                 val expiry = Instant.ofEpochMilli(race.savedAtMs + RaceStore.MAX_AGE_MS)
                 ComplicationDataTimeline(
                     armed,
@@ -211,6 +213,10 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
     // ---- Helpers -------------------------------------------------------------
 
     private fun plain(s: String) = PlainComplicationText.Builder(s).build()
+
+    /** Round to the nearest whole second (epoch) — keeps text and dot flips in phase. */
+    private fun wholeSecond(wallMs: Long): Instant =
+        Instant.ofEpochMilli(((wallMs + 500) / 1000) * 1000)
 
     private fun boat() = MonochromaticImage.Builder(
         Icon.createWithResource(this, R.drawable.ic_complication_sailboat)
