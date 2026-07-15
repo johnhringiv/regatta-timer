@@ -11,7 +11,8 @@
 A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 3). Fully standalone — no phone, no companion app, no account, no network. Built because nothing on the market handled a real start line: the screen must never leave the timer mid-sequence, and a missed start press must be correctable at the next gun.
 
 <p align="center">
-  <img src="docs/demo.gif" width="240" alt="The final seconds: amber countdown, the gun, automatic green count-up" />
+  <img src="docs/demo.gif" width="220" alt="The final seconds: amber countdown, the gun, automatic green count-up" />
+  <img src="docs/demo-complication.gif" width="220" alt="The complication: dot sweeping the ring as the countdown ticks" />
 </p>
 
 ## Features
@@ -44,10 +45,6 @@ Swipe from the watch face. When a timer is in flight the tile says so instead of
 ### The complication
 
 Put the timer in a watch-face complication slot: a ring where the dot is time remaining, a ticking countdown in the center, and a sailboat at the bottom (on faces that render ranged values, like the Pixel defaults). Armed, it shows the last-used sequence (`5m`/`3m`); one tap starts it with the app opening mid-count.
-
-<p align="center">
-  <img src="docs/demo-complication.gif" width="240" alt="The complication counting down: dot sweeping the ring as the text ticks" />
-</p>
 
 | Armed on the face                                              | Counting down                                                          |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------- |

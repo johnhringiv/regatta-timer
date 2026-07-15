@@ -28,23 +28,16 @@
   </header>
 
   <main>
+    <div class="demo-row">
+      <video src="demo.mp4" width="220" autoplay loop muted playsinline
+        aria-label="The final seconds: amber countdown, the gun, automatic green count-up"></video>
+      <video src="demo-complication.mp4" width="220" autoplay loop muted playsinline
+        aria-label="Watch face complication: dot sweeping the ring as the countdown ticks"></video>
+    </div>
+
     <section>
       <h2>Why it exists</h2>
       <p>Generic watch timers fail on a start line: the screen falls back to the watch face mid-sequence, wet fingers can't hit small buttons, and a missed start press can't be corrected. Regatta Timer is built around the three things that matter: <strong>the display never leaves the timer</strong>, <strong>everything works wet</strong>, and <strong>sync fixes your timing at the next gun</strong>.</p>
-    </section>
-
-    <section>
-      <h2>On the wrist</h2>
-      <p class="demo">
-        <video src="demo.mp4" width="240" autoplay loop muted playsinline
-          aria-label="The final seconds: amber countdown, the gun, automatic green count-up"></video>
-      </p>
-      <div class="shots">
-        <figure><img src="screenshots/armed.png" alt="Armed at 5:00"><figcaption>Armed</figcaption></figure>
-        <figure><img src="screenshots/countdown.png" alt="Counting down"><figcaption>Countdown</figcaption></figure>
-        <figure><img src="screenshots/ambient.png" alt="Live countdown continues in ambient mode when wet"><figcaption>Wet / ambient</figcaption></figure>
-        <figure><img src="screenshots/countup.png" alt="Race count-up"><figcaption>Race</figcaption></figure>
-      </div>
     </section>
 
     <section>
@@ -64,6 +57,16 @@
     </section>
 
     <section>
+      <h2>On the wrist</h2>
+      <div class="shots">
+        <figure><img src="screenshots/armed.png" alt="Armed at 5:00"><figcaption>Armed</figcaption></figure>
+        <figure><img src="screenshots/countdown.png" alt="Counting down"><figcaption>Countdown</figcaption></figure>
+        <figure><img src="screenshots/ambient.png" alt="Live countdown continues in ambient mode when wet"><figcaption>Wet / ambient</figcaption></figure>
+        <figure><img src="screenshots/countup.png" alt="Race count-up"><figcaption>Race</figcaption></figure>
+      </div>
+    </section>
+
+    <section>
       <h2>The tile</h2>
       <p>Swipe from the watch face to arm a start in one tap. With a timer in flight, the tile says so instead of offering to arm a new one.</p>
       <div class="shots">
@@ -75,10 +78,6 @@
     <section>
       <h2>The complication</h2>
       <p>Put the timer in a watch-face complication slot: a ring where the dot is time remaining, a ticking countdown in the center, and a sailboat at the bottom (on faces that render ranged values, like the Pixel defaults). Armed, it shows the last-used sequence; one tap starts it.</p>
-      <p class="demo">
-        <video src="demo-complication.mp4" width="240" autoplay loop muted playsinline
-          aria-label="Watch face complication: dot sweeping the ring as the countdown ticks"></video>
-      </p>
       <div class="shots">
         <figure><img src="screenshots/complication_armed.png" alt="Watch face with the complication armed, showing 5M"><figcaption>Armed on the face</figcaption></figure>
         <figure><img src="screenshots/complication_countdown.png" alt="Watch face with the complication counting down, dot at time remaining"><figcaption>Counting down</figcaption></figure>
