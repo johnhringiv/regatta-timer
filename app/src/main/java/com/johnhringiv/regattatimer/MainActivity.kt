@@ -15,8 +15,11 @@ import androidx.compose.runtime.setValue
 import androidx.wear.ambient.AmbientLifecycleObserver
 import com.johnhringiv.regattatimer.ui.TimerScreen
 
-/** Intent extra (set by the tile) naming the [Mode] to arm on launch. */
+/** Intent extra (set by the tile/complication) naming the [Mode] to arm on launch. */
 const val EXTRA_MODE = "mode"
+
+/** Intent extra (set by the complication) to start the sequence immediately on launch. */
+const val EXTRA_AUTO_START = "auto_start"
 
 class MainActivity : ComponentActivity() {
 
@@ -89,5 +92,11 @@ class MainActivity : ComponentActivity() {
     private fun armModeFromIntent(intent: Intent?) {
         val name = intent?.getStringExtra(EXTRA_MODE) ?: return
         runCatching { Mode.valueOf(name) }.getOrNull()?.let(viewModel::armMode)
+        if (intent.getBooleanExtra(EXTRA_AUTO_START, false)) {
+            viewModel.start() // no-ops unless Idle, so a running race is never disturbed
+            // strip the extra so recents/recreation redelivery can't restart a reset timer
+            intent.removeExtra(EXTRA_AUTO_START)
+            setIntent(intent)
+        }
     }
 }

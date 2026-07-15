@@ -84,9 +84,18 @@ h2 {
 
 .demo { text-align: center; }
 
-.demo video {
+.demo-row {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-top: 1.6rem;
+}
+
+.demo video,
+.demo-row video {
   width: 220px;
-  max-width: 60%;
+  max-width: 42%;
   border-radius: 50%;
   border: 3px solid var(--gold);
   background: #000;

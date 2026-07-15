@@ -11,7 +11,8 @@
 A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 3). Fully standalone — no phone, no companion app, no account, no network. Built because nothing on the market handled a real start line: the screen must never leave the timer mid-sequence, and a missed start press must be correctable at the next gun.
 
 <p align="center">
-  <img src="docs/demo.gif" width="240" alt="The final seconds: amber countdown, the gun, automatic green count-up" />
+  <img src="docs/demo.gif" width="220" alt="The final seconds: amber countdown, the gun, automatic green count-up" />
+  <img src="docs/demo-complication.gif" width="220" alt="The complication: dot sweeping the ring as the countdown ticks" />
 </p>
 
 ## Features
@@ -23,8 +24,10 @@ A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 
 - **Screen never leaves the app** while armed or counting down; count-up dims to an always-on ambient display
 - **Wet-proof**: countdown, display, and haptics keep running even when water forces the watch into ambient mode; huge half-screen touch targets; long-press-guarded reset so splashes can't kill your sequence
 - **Quick-launch tile**: swipe from the watch face, tap 5 min or 3 min, and the timer opens pre-armed
+- **Watch-face complication**: weather-style ring where the dot is time remaining, ticking countdown in the center — one tap starts the last-used sequence right from the face
 - **Survives interruptions**: an in-flight countdown or race is restored at the correct time even if the app is closed — or the watch reboots
 - **Battery guard**: an armed timer releases the screen after 10 idle minutes (any tap re-arms it); the countdown itself always holds the screen
+- **Free, no ads, no tracking**: GPL open source; no account, no network, [no data collection](https://regatta-timer.johnhringiv.com/privacy.html) — about 2 MB
 
 ### The app
 
@@ -39,6 +42,16 @@ Swipe from the watch face. When a timer is in flight the tile says so instead of
 | Ready to arm                                   | Timer in flight                                    |
 | ---------------------------------------------- | -------------------------------------------------- |
 | ![Tile armed](docs/screenshots/tile_armed.png) | ![Tile running](docs/screenshots/tile_running.png) |
+
+### The complication
+
+Put the timer in a watch-face complication slot: a ring where the dot is time remaining, a ticking countdown in the center, and a sailboat at the bottom (on faces that render ranged values, like the Pixel defaults). Armed, it shows the last-used sequence (`5m`/`3m`); one tap starts it with the app opening mid-count.
+
+| Armed on the face                                              | Counting down                                                          |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| ![Complication armed](docs/screenshots/complication_armed.png) | ![Complication countdown](docs/screenshots/complication_countdown.png) |
+
+**Worth knowing**: in always-on (ambient) display, watch faces refresh complications about once a minute, so the countdown on the _face_ can read up to a minute stale until you turn your wrist — identical to the built-in stopwatch/timer complications. Inside the app, the countdown stays live to the second even in ambient.
 
 ## Install (sideload)
 

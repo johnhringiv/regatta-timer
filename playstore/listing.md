@@ -45,6 +45,8 @@ FEATURES
   through the final ten seconds (heavier from five), gun blast at 0:00
 • Quick-launch tile: arm a 5 or 3 minute start straight from the watch face —
   and it shows when a timer is already running
+• Watch-face complication: a ring where the dot is time remaining and a ticking
+  countdown in the center — one tap starts the last-used sequence
 • Survives interruptions: an in-flight countdown or race is restored at the
   correct time even if the app closes or the watch reboots
 • Battery guard: an armed timer releases the screen after 10 idle minutes

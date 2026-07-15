@@ -11,7 +11,7 @@ if command -v prettier >/dev/null 2>&1; then
     FMT="prettier"
 elif command -v npx >/dev/null 2>&1; then
     FMT="npx --yes prettier"
-elif [ -x "$HOME/.local/node/npx.cmd" ]; then
+elif [ -f "$HOME/.local/node/npx.cmd" ]; then # -f: sh doesn't see .cmd as executable
     # portable node: npx needs its sibling node.exe on PATH
     PATH="$HOME/.local/node:$PATH"
     export PATH

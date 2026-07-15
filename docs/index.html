@@ -28,6 +28,13 @@
   </header>
 
   <main>
+    <div class="demo-row">
+      <video src="demo.mp4" width="220" autoplay loop muted playsinline
+        aria-label="The final seconds: amber countdown, the gun, automatic green count-up"></video>
+      <video src="demo-complication.mp4" width="220" autoplay loop muted playsinline
+        aria-label="Watch face complication: dot sweeping the ring as the countdown ticks"></video>
+    </div>
+
     <section>
       <h2>Why it exists</h2>
       <p>Generic watch timers fail on a start line: the screen falls back to the watch face mid-sequence, wet fingers can't hit small buttons, and a missed start press can't be corrected. Regatta Timer is built around the three things that matter: <strong>the display never leaves the timer</strong>, <strong>everything works wet</strong>, and <strong>sync fixes your timing at the next gun</strong>.</p>
@@ -42,18 +49,16 @@
         <li><strong>Haptic signals</strong> — double buzz at 4:00, long buzz at 1:00, ticks through the last 10&nbsp;s, gun blast at 0:00</li>
         <li><strong>Wet-proof</strong> — countdown, display, and buzzes continue even when water forces ambient mode; half-screen touch targets; reset needs a deliberate long-press</li>
         <li><strong>Quick-launch tile</strong> — swipe from the watch face, tap 5&nbsp;min or 3&nbsp;min, pre-armed</li>
+        <li><strong>Watch-face complication</strong> — a ring where the dot is time remaining and one tap starts the last-used sequence, straight from the face</li>
         <li><strong>Survives interruptions</strong> — an in-flight countdown or race restores at the correct time even if the app closes or the watch reboots</li>
         <li><strong>Battery guard</strong> — an armed timer releases the screen after 10 idle minutes; any tap re-arms it</li>
-        <li><strong>Fully standalone</strong> — no companion app, no network, ~2&nbsp;MB</li>
+        <li><strong>Free, no ads, no tracking</strong> — GPL open source; no account, no network, <a href="privacy.html">no data collection</a>, ~2&nbsp;MB</li>
+        <li><strong>Fully standalone</strong> — no phone or companion app required, ever</li>
       </ul>
     </section>
 
     <section>
       <h2>On the wrist</h2>
-      <p class="demo">
-        <video src="demo.mp4" width="240" autoplay loop muted playsinline
-          aria-label="The final seconds: amber countdown, the gun, automatic green count-up"></video>
-      </p>
       <div class="shots">
         <figure><img src="screenshots/armed.png" alt="Armed at 5:00"><figcaption>Armed</figcaption></figure>
         <figure><img src="screenshots/countdown.png" alt="Counting down"><figcaption>Countdown</figcaption></figure>
@@ -69,6 +74,16 @@
         <figure><img src="screenshots/tile_armed.png" alt="Tile ready to arm 5 or 3 minute start"><figcaption>Ready to arm</figcaption></figure>
         <figure><img src="screenshots/tile_running.png" alt="Tile showing a countdown is in flight"><figcaption>Timer in flight</figcaption></figure>
       </div>
+    </section>
+
+    <section>
+      <h2>The complication</h2>
+      <p>Put the timer in a watch-face complication slot: a ring where the dot is time remaining, a ticking countdown in the center, and a sailboat at the bottom (on faces that render ranged values, like the Pixel defaults). Armed, it shows the last-used sequence; one tap starts it.</p>
+      <div class="shots">
+        <figure><img src="screenshots/complication_armed.png" alt="Watch face with the complication armed, showing 5M"><figcaption>Armed on the face</figcaption></figure>
+        <figure><img src="screenshots/complication_countdown.png" alt="Watch face with the complication counting down, dot at time remaining"><figcaption>Counting down</figcaption></figure>
+      </div>
+      <p><em>Worth knowing:</em> in always-on display, watch faces refresh complications about once a minute — the countdown on the face can read up to a minute stale until you turn your wrist, identical to the built-in stopwatch complication. Inside the app the countdown stays live to the second, even in ambient.</p>
     </section>
 
     <section id="beta">

@@ -77,6 +77,8 @@ FIVE mode is deliberately **silent at 3:00 and 2:00** — no real signal exists 
 and phantom buzzes could be mistaken for signals. Cues are edge-triggered on the displayed
 second so a sync can never double-fire or skip them. Two-stage final count (not a gradual
 ramp) because discrete stage changes are countable on the wrist; amplitude ramps are not.
+The gun haptic is **timeliness-guarded**: it fires only within ~2 s of the real deadline —
+a frozen/cached process waking minutes late transitions to count-up silently.
 
 ## 6. Screen policy
 
@@ -111,7 +113,34 @@ Swipe-accessible from the watch face. Two states, driven by the same persisted r
 - **Timer in flight**: status line (COUNTDOWN or RACING, green) + single "Open" chip.
   The app requests a tile refresh on every phase transition.
 
-## 9. Visual language
+## 9. Complication
+
+One-tap starts from the watch face itself. The complication supplies typed data; the face
+renders it (Pixel faces: weather-style ring + dot, center text, small icon at the bottom).
+Arms **the last mode used anywhere** (app toggle, tile, or complication start) — no
+per-instance configuration; the armed label shows which sequence a tap starts.
+
+| State     | Ring (min 0, max duration)                                 | Center text        | Tap                       |
+| --------- | ---------------------------------------------------------- | ------------------ | ------------------------- |
+| Armed     | full                                                       | "5m" / "3m"        | open app **auto-started** |
+| Countdown | dot sweeps (platform-evaluated, ~1 Hz)                     | ticking count-down | open app                  |
+| Count-up  | dot sweeps race progress vs a nominal 60 min, parks at max | ticking count-up   | open app                  |
+
+- Sailboat monochromatic icon in all states (the face may hide it in tight slots).
+- **Zero-push design**: countdown text ticks via time-difference text; the dot sweeps via a
+  dynamic value; a data timeline flips countdown → count-up at the gun — all rendered by the
+  platform even if the app process is dead. Pushes happen only on phase transitions
+  (start / sync / gun / reset), same hook as the tile.
+- Tap-to-start opens the app running (not a silent background start): the ticker, haptics,
+  wake lock, and screen policy live in the app process — a mute start would skip every cue.
+  Repeated deliveries can't restart a sequence (start() no-ops unless Idle).
+- Types: RANGED_VALUE (preferred) + SHORT_TEXT fallback (same text/icon/tap, no ring).
+- 12 h validity mirrors persistence (§7).
+- Face-ambient caveat: in always-on mode the FACE updates complications at minute cadence
+  (platform AOD policy — same as weather), so tick/sweep coarsen until wake; values are
+  absolute, so everything is exact the instant the wrist wakes. Not a bug.
+
+## 10. Visual language
 
 - Black background always (OLED, sunlight).
 - Digits: white (idle/countdown) → **amber** final 10 s → **green** count-up.
@@ -121,7 +150,7 @@ Swipe-accessible from the watch face. Two states, driven by the same persisted r
 - Icon: gold burgee (flying right) + green Bootstrap stopwatch, colors from the
   johnhringiv.com burgee favicon; all pennant vertices r=30 from icon center (circular-mask safe).
 
-## 10. Explicitly out of scope (decided against)
+## 11. Explicitly out of scope (decided against)
 
 - Audio signals (inaudible on the water; haptics only)
 - Crown/rotary input (accidental-activation risk — see §4)
@@ -129,7 +158,7 @@ Swipe-accessible from the watch face. Two states, driven by the same persisted r
 - Live ticking time on the tile (refresh-budget rabbit hole)
 - Continuous haptic amplitude ramps (indistinguishable on the wrist)
 
-## 11. Versioning & release
+## 12. Versioning & release
 
 - `versionCode`: bumped on every feature-branch change (CI-enforced > main).
 - `versionName`: bumped once per PR to main (CI-enforced ≠ main). Squash-merge only;
@@ -138,9 +167,8 @@ Swipe-accessible from the watch face. Two states, driven by the same persisted r
 - Distribution: GitHub releases (sideload) now; Google Play closed test → production later
   (see `playstore/listing.md`).
 
-## 12. Roadmap (open issues)
+## 13. Roadmap (open issues)
 
-- [#2](https://github.com/johnhringiv/regatta-timer/issues/2) Watch-face complication
 - [#4](https://github.com/johnhringiv/regatta-timer/issues/4) Custom sequence lengths
 - [#5](https://github.com/johnhringiv/regatta-timer/issues/5) Race log (start timestamps)
 - [#6](https://github.com/johnhringiv/regatta-timer/issues/6) Ongoing Activity chip during count-up
