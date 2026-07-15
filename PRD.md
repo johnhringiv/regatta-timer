@@ -136,6 +136,9 @@ per-instance configuration; the armed label shows which sequence a tap starts.
   Repeated deliveries can't restart a sequence (start() no-ops unless Idle).
 - Types: RANGED_VALUE (preferred) + SHORT_TEXT fallback (same text/icon/tap, no ring).
 - 12 h validity mirrors persistence (§7).
+- Face-ambient caveat: in always-on mode the FACE updates complications at minute cadence
+  (platform AOD policy — same as weather), so tick/sweep coarsen until wake; values are
+  absolute, so everything is exact the instant the wrist wakes. Not a bug.
 
 ## 10. Visual language
 
