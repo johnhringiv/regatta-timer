@@ -120,11 +120,11 @@ renders it (Pixel faces: weather-style ring + dot, center text, small icon at th
 Arms **the last mode used anywhere** (app toggle, tile, or complication start) — no
 per-instance configuration; the armed label shows which sequence a tap starts.
 
-| State     | Ring (min 0, max duration)             | Center text        | Tap                       |
-| --------- | -------------------------------------- | ------------------ | ------------------------- |
-| Armed     | full                                   | "5m" / "3m"        | open app **auto-started** |
-| Countdown | dot sweeps (platform-evaluated, ~1 Hz) | ticking count-down | open app                  |
-| Count-up  | empty                                  | ticking count-up   | open app                  |
+| State     | Ring (min 0, max duration)                                 | Center text        | Tap                       |
+| --------- | ---------------------------------------------------------- | ------------------ | ------------------------- |
+| Armed     | full                                                       | "5m" / "3m"        | open app **auto-started** |
+| Countdown | dot sweeps (platform-evaluated, ~1 Hz)                     | ticking count-down | open app                  |
+| Count-up  | dot sweeps race progress vs a nominal 60 min, parks at max | ticking count-up   | open app                  |
 
 - Sailboat monochromatic icon in all states (the face may hide it in tight slots).
 - **Zero-push design**: countdown text ticks via time-difference text; the dot sweeps via a

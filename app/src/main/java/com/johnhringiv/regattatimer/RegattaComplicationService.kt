@@ -175,11 +175,22 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
         ).build()
         val desc = plain("Regatta Timer race in progress")
         return when (type) {
-            ComplicationType.RANGED_VALUE ->
+            ComplicationType.RANGED_VALUE -> {
+                // Dot sweeps progress through a nominal race hour, parking at max for
+                // marathon races — the ticking text stays the exact source of truth.
+                val maxSeconds = EXPECTED_RACE_SECONDS.toFloat()
+                val elapsed = DynamicInstant.withSecondsPrecision(gun)
+                    .durationUntil(DynamicInstant.platformTimeWithSecondsPrecision())
+                    .toIntSeconds()
+                    .asFloat()
+                val progress = DynamicFloat.onCondition(elapsed.gt(maxSeconds))
+                    .use(DynamicFloat.constant(maxSeconds))
+                    .elseUse(elapsed)
                 RangedValueComplicationData.Builder(
-                    value = 0f,
+                    dynamicValue = progress,
+                    fallbackValue = 0f,
                     min = 0f,
-                    max = mode.durationSeconds.toFloat(),
+                    max = maxSeconds,
                     contentDescription = desc,
                 )
                     .setValueType(RangedValueComplicationData.TYPE_RATING) // weather-style dot, not a drain arc
@@ -187,6 +198,7 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
                     .setMonochromaticImage(boat())
                     .setTapAction(openTap())
                     .build()
+            }
 
             else ->
                 ShortTextComplicationData.Builder(ticking, desc)
@@ -232,6 +244,9 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
         )
 
     companion object {
+        /** Nominal race length the count-up dot sweeps against (clamps at max beyond). */
+        const val EXPECTED_RACE_SECONDS = 60 * 60L
+
         fun component(context: Context) =
             ComponentName(context, RegattaComplicationService::class.java)
     }
