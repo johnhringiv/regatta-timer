@@ -23,6 +23,7 @@ A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 
 - **Screen never leaves the app** while armed or counting down; count-up dims to an always-on ambient display
 - **Wet-proof**: countdown, display, and haptics keep running even when water forces the watch into ambient mode; huge half-screen touch targets; long-press-guarded reset so splashes can't kill your sequence
 - **Quick-launch tile**: swipe from the watch face, tap 5 min or 3 min, and the timer opens pre-armed
+- **Watch-face complication**: weather-style ring where the dot is time remaining, ticking countdown in the center — one tap starts your configured sequence right from the face
 - **Survives interruptions**: an in-flight countdown or race is restored at the correct time even if the app is closed — or the watch reboots
 - **Battery guard**: an armed timer releases the screen after 10 idle minutes (any tap re-arms it); the countdown itself always holds the screen
 

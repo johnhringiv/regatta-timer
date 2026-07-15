@@ -32,6 +32,37 @@
         </activity>
 
         <service
+            android:name=".RegattaComplicationService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:icon="@drawable/ic_complication_sailboat"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="RANGED_VALUE,SHORT_TEXT" />
+            <!-- push-only: transitions call requestUpdateAll; countdown/dot tick face-side -->
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+            <meta-data
+                android:name="android.support.wearable.complications.PROVIDER_CONFIG_ACTION"
+                android:value="com.johnhringiv.regattatimer.COMPLICATION_CONFIG" />
+        </service>
+
+        <activity
+            android:name=".ComplicationConfigActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.johnhringiv.regattatimer.COMPLICATION_CONFIG" />
+                <category android:name="android.support.wearable.complications.category.PROVIDER_CONFIG" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
             android:name=".RegattaTileService"
             android:exported="true"
             android:label="@string/app_name"

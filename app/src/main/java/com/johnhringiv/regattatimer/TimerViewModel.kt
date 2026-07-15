@@ -77,10 +77,15 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
 
     // ---- Persistence ---------------------------------------------------------
 
-    /** Refresh the tile so it reflects running/armed state promptly. */
-    private fun updateTile() =
-        androidx.wear.tiles.TileService.getUpdater(getApplication())
+    /** Refresh the tile and complication so every surface reflects the phase promptly. */
+    private fun updateSurfaces() {
+        val app = getApplication<Application>()
+        androidx.wear.tiles.TileService.getUpdater(app)
             .requestUpdate(RegattaTileService::class.java)
+        androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
+            .create(app, ComplicationModeStore.component(app))
+            .requestUpdateAll()
+    }
 
     /** Restore an in-flight race after process death or reboot (silent — no gun haptic). */
     private fun restorePersistedRace() {
@@ -108,7 +113,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
                 startTicker()
             }
         }
-        updateTile() // phase may have advanced (gun fired while dead)
+        updateSurfaces() // phase may have advanced (gun fired while dead)
     }
 
     // ---- User actions -------------------------------------------------------
@@ -144,7 +149,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             _screenHold.value = true
             holdWakeLock(st.mode.durationMs)
             raceStore.saveCountdown(st.mode, System.currentTimeMillis() + st.mode.durationMs)
-            updateTile()
+            updateSurfaces()
             startTicker()
         }
     }
@@ -164,6 +169,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
                 haptics.click()
                 holdWakeLock(newRemaining)
                 raceStore.saveCountdown(st.mode, System.currentTimeMillis() + newRemaining)
+                updateSurfaces() // the deadline moved; tile + complication must track it
             }
             startTicker()
         }
@@ -178,7 +184,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
             releaseWakeLock()
             ticker?.cancel()
             raceStore.clear()
-            updateTile()
+            updateSurfaces()
             noteInteraction()
         }
     }
@@ -207,7 +213,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
         // Derive the gun's wall-clock time from the elapsedRealtime anchor.
         val gunWall = System.currentTimeMillis() - (SystemClock.elapsedRealtime() - countUp.zero)
         raceStore.saveCountUp(countUp.mode, gunWall)
-        updateTile()
+        updateSurfaces()
     }
 
     private fun startTicker() {
