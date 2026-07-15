@@ -49,7 +49,7 @@ Put the timer in a watch-face complication slot: a ring where the dot is time re
 | -------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | ![Complication armed](docs/screenshots/complication_armed.png) | ![Complication countdown](docs/screenshots/complication_countdown.png) |
 
-**Worth knowing**: in always-on (ambient) display, watch faces refresh complications about once a minute, so the countdown on the *face* can read up to a minute stale until you turn your wrist — identical to the built-in stopwatch/timer complications. Inside the app, the countdown stays live to the second even in ambient.
+**Worth knowing**: in always-on (ambient) display, watch faces refresh complications about once a minute, so the countdown on the _face_ can read up to a minute stale until you turn your wrist — identical to the built-in stopwatch/timer complications. Inside the app, the countdown stays live to the second even in ambient.
 
 ## Install (sideload)
 
