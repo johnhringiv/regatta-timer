@@ -88,6 +88,7 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
                 value = 150f, min = 0f, max = 300f,
                 contentDescription = plain("Regatta Timer, 2:30 remaining"),
             )
+                .setValueType(RangedValueComplicationData.TYPE_RATING) // weather-style dot, not a drain arc
                 .setText(plain("2:30"))
                 .setMonochromaticImage(boat())
                 .build()
@@ -114,6 +115,7 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
                     max = mode.durationSeconds.toFloat(),
                     contentDescription = desc,
                 )
+                    .setValueType(RangedValueComplicationData.TYPE_RATING) // weather-style dot, not a drain arc
                     .setText(text)
                     .setMonochromaticImage(boat())
                     .setTapAction(tap)
@@ -151,6 +153,7 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
                     max = mode.durationSeconds.toFloat(),
                     contentDescription = desc,
                 )
+                    .setValueType(RangedValueComplicationData.TYPE_RATING) // weather-style dot, not a drain arc
                     .setText(ticking)
                     .setMonochromaticImage(boat())
                     .setTapAction(openTap())
@@ -179,6 +182,7 @@ class RegattaComplicationService : SuspendingTimelineComplicationDataSourceServi
                     max = mode.durationSeconds.toFloat(),
                     contentDescription = desc,
                 )
+                    .setValueType(RangedValueComplicationData.TYPE_RATING) // weather-style dot, not a drain arc
                     .setText(ticking)
                     .setMonochromaticImage(boat())
                     .setTapAction(openTap())
