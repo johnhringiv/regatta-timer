@@ -11,7 +11,7 @@ Graphics regenerate via `generate-assets.ps1` (gitignored outputs); Wear screens
 | App name (≤30)          | `Regatta Timer`                                                            |
 | Short description (≤80) | `Sailing race start timer: 5/3-min sequences, sync to the gun, works wet.` |
 | Category                | Sports                                                                     |
-| Tags                    | Sailing, Timer                                                             |
+| Tags                    | Boating, Clock alarm & timer, Racing, Sports                               |
 | Website                 | https://regatta-timer.johnhringiv.com/                                     |
 | Email (public)          | play@johnhringiv.com                                                       |
 | Privacy policy URL      | https://regatta-timer.johnhringiv.com/privacy.html                         |
@@ -42,7 +42,8 @@ FEATURES
 • 5-minute (RRS 26) and 3-minute start sequences
 • Automatic count-up after the start for elapsed race time
 • Haptic signals: double buzz at the 4:00 preparatory, long buzz at 1:00, ticks
-  through the final ten seconds (heavier from five), gun blast at 0:00
+  through the final ten seconds (heavier from five), and an unmistakable start
+  signal at 0:00
 • Quick-launch tile: arm a 5 or 3 minute start straight from the watch face —
   and it shows when a timer is already running
 • Watch-face complication: a ring where the dot is time remaining and a ticking

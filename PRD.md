@@ -157,6 +157,9 @@ per-instance configuration; the armed label shows which sequence a tap starts.
 - Telemetry/analytics of any kind (Play Console platform stats suffice)
 - Live ticking time on the tile (refresh-budget rabbit hole)
 - Continuous haptic amplitude ramps (indistinguishable on the wrist)
+- Race log / start-time history (issue #5, closed): record-keeping is a different job than
+  the start line, and a browsable list is the app's first second screen — not worth it
+  without concrete demand. The gun timestamp already persists if that demand ever appears.
 
 ## 12. Versioning & release
 

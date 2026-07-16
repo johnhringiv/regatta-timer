@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="docs/logo.svg" width="120" alt="Regatta Timer logo" />
 </p>
 
@@ -14,6 +14,14 @@ A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 
   <img src="docs/demo.gif" width="220" alt="The final seconds: amber countdown, the gun, automatic green count-up" />
   <img src="docs/demo-complication.gif" width="220" alt="The complication: dot sweeping the ring as the countdown ticks" />
 </p>
+
+## 🙋 Beta testers wanted
+
+The beta is live on Google Play (closed testing) — no sideloading needed. Google requires **12 testers enrolled for 14 days** before the app can go public, so every tester genuinely helps. If you sail (or just own a Wear OS watch):
+
+1. [**Open an issue**](https://github.com/johnhringiv/regatta-timer/issues/new?title=Beta+tester) — or email [play@johnhringiv.com](mailto:play@johnhringiv.com) — with the Google account email you use on the Play Store (closed testing is invite-only)
+2. Once added, **[opt in here](https://play.google.com/apps/testing/com.johnhringiv.regattatimer)**
+3. Install from **[the Play Store listing](https://play.google.com/store/apps/details?id=com.johnhringiv.regattatimer)** on your watch — updates arrive automatically like any app
 
 ## Features
 
@@ -69,10 +77,6 @@ Grab the APK from [Releases](https://github.com/johnhringiv/regatta-timer/releas
    ```
 
 Needs Wear OS 5+ (minSdk 34). `adb` ships with [Android platform-tools](https://developer.android.com/tools/releases/platform-tools).
-
-## 🙋 Beta testers wanted
-
-I want to publish this to Google Play so nobody has to sideload — but Google requires **12 testers enrolled for 14 days** in a closed test before a personal developer account can publish. If you sail (or just own a Wear OS watch) and are willing to install the beta and keep it for two weeks, [**open an issue**](https://github.com/johnhringiv/regatta-timer/issues/new?title=Beta+tester) with the Google account email you use on the Play Store.
 
 ## Building from source
 
