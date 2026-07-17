@@ -19,9 +19,9 @@ A sailing race start timer for Wear OS (built for and tested on the Pixel Watch 
 
 The beta is live on Google Play (closed testing) — no sideloading needed. Google requires **12 testers enrolled for 14 days** before the app can go public, so every tester genuinely helps. If you sail (or just own a Wear OS watch):
 
-1. [**Open an issue**](https://github.com/johnhringiv/regatta-timer/issues/new?title=Beta+tester) — or email [play@johnhringiv.com](mailto:play@johnhringiv.com) — with the Google account email you use on the Play Store (closed testing is invite-only)
-2. Once added, **[opt in here](https://play.google.com/apps/testing/com.johnhringiv.regattatimer)**
-3. Install from **[the Play Store listing](https://play.google.com/store/apps/details?id=com.johnhringiv.regattatimer)** on your watch — updates arrive automatically like any app
+1. **Get invited** — email [play@johnhringiv.com](mailto:play@johnhringiv.com) the Google account email you use on the Play Store (closed testing is invite-only)
+2. **Opt in** — once you're added, accept at **[the opt-in page](https://play.google.com/apps/testing/com.johnhringiv.regattatimer)**
+3. **Install from a computer** — open **[the Play listing](https://play.google.com/store/apps/details?id=com.johnhringiv.regattatimer)** in a browser, hit Install, and pick your watch. Updates then arrive automatically like any app. (The Play Store on your _phone_ will say "not compatible" — that's normal: there's no phone app, and the phone store can't push to a watch.)
 
 ## Features
 
