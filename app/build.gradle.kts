@@ -21,8 +21,8 @@ android {
         targetSdk = 36
         // versionCode bumps on every feature-branch change (CI-enforced > main).
         // versionName bumps once per PR to main (CI-enforced).
-        versionCode = 19
-        versionName = "0.7"
+        versionCode = 20
+        versionName = "0.8"
     }
 
     signingConfigs {
@@ -37,6 +37,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Distinct applicationId so a dev build can sit alongside the Play Store install on a
+            // real watch — signatures differ, so without this the two cannot coexist.
+            applicationIdSuffix = ".debug"
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true

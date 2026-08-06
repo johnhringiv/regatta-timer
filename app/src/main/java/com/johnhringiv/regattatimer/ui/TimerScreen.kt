@@ -1,9 +1,11 @@
 package com.johnhringiv.regattatimer.ui
 
 import android.os.SystemClock
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,10 +14,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -27,6 +37,7 @@ import androidx.wear.compose.material3.TimeText
 import com.johnhringiv.regattatimer.Mode
 import com.johnhringiv.regattatimer.TimerState
 import com.johnhringiv.regattatimer.formatMmSs
+import kotlin.math.abs
 
 private val Digits = Color(0xFFF5F5F5)
 private val Amber = Color(0xFFFFB300)
@@ -36,6 +47,21 @@ private val DimLabel = Color(0xFF6E6E6E)
 private val ZoneLabel = Color(0xFFF5C518) // burgee gold
 
 private fun Mode.label() = formatMmSs(durationSeconds)
+
+/**
+ * Accumulated rotary scroll needed to sync from the crown, in pixels.
+ *
+ * Deliberately more than an idle brush and less than a flick. Water cannot turn a crown, so this
+ * path stays available when the glass is wet — and when Wear OS auto-engages Water Lock and kills
+ * touch entirely, it is the only way left to sync.
+ *
+ * 48f tested too sensitive on a Pixel Watch 3; raised to a deliberate quarter-turn. The handler
+ * logs accumulated scroll so this can be tuned from measurement rather than feel.
+ */
+private const val ROTARY_SYNC_THRESHOLD_PX = 160f
+
+/** A pause longer than this restarts the rotary accumulator, so slow drift can never add up. */
+private const val ROTARY_IDLE_RESET_MS = 500L
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -47,6 +73,7 @@ fun TimerScreen(
     onToggleMode: () -> Unit,
     onStart: () -> Unit,
     onSync: () -> Unit,
+    onCrownSync: () -> Unit,
     onReset: () -> Unit,
     onAnyTap: () -> Unit = {},
 ) {
@@ -58,7 +85,39 @@ fun TimerScreen(
         // Idle/Countdown in ambient (wet screens force it) render the SAME layout,
         // just dimmed — controls and labels never disappear mid-sequence.
 
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+        // Crown sync: accumulate rotary scroll so a brush can't fire it, and restart the
+        // accumulator after a pause so slow drift never adds up to a sync.
+        val focusRequester = remember { FocusRequester() }
+        var rotaryAccum by remember { mutableFloatStateOf(0f) }
+        var lastRotaryMs by remember { mutableLongStateOf(0L) }
+        LaunchedEffect(Unit) { focusRequester.requestFocus() }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .onRotaryScrollEvent { event ->
+                    if (state !is TimerState.Countdown) return@onRotaryScrollEvent false
+                    val now = SystemClock.elapsedRealtime()
+                    if (now - lastRotaryMs > ROTARY_IDLE_RESET_MS) rotaryAccum = 0f
+                    lastRotaryMs = now
+                    rotaryAccum += event.verticalScrollPixels
+                    // TEMPORARY: tuning only. Remove once ROTARY_SYNC_THRESHOLD_PX is settled.
+                    Log.d(
+                        "RegattaTimer",
+                        "rotary delta=${event.verticalScrollPixels} accum=$rotaryAccum " +
+                            "threshold=$ROTARY_SYNC_THRESHOLD_PX",
+                    )
+                    if (abs(rotaryAccum) >= ROTARY_SYNC_THRESHOLD_PX) {
+                        rotaryAccum = 0f
+                        onCrownSync()
+                    }
+                    true
+                }
+                // Must sit BELOW onRotaryScrollEvent or rotary events never reach it.
+                .focusRequester(focusRequester)
+                .focusable()
+        ) {
             // Two half-screen touch zones (wet-hands friendly).
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(

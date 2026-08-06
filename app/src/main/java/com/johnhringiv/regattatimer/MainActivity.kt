@@ -2,6 +2,9 @@ package com.johnhringiv.regattatimer
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
+import android.util.Log
+import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,9 +24,16 @@ const val EXTRA_MODE = "mode"
 /** Intent extra (set by the complication) to start the sequence immediately on launch. */
 const val EXTRA_AUTO_START = "auto_start"
 
+private const val TAG = "RegattaTimer"
+
 class MainActivity : ComponentActivity() {
 
     private val viewModel: TimerViewModel by viewModels()
+
+    // TEMPORARY: contact characterisation. Feeds the touch-guard calibration logging in
+    // dispatchTouchEvent - remove along with it once the thresholds are settled.
+    private var contactDownMs = 0L
+    private var contactPeakMajor = 0f
 
     private var isAmbient by mutableStateOf(false)
     private var ambientTick by mutableIntStateOf(0)
@@ -78,10 +88,44 @@ class MainActivity : ComponentActivity() {
                 onToggleMode = viewModel::toggleMode,
                 onStart = viewModel::start,
                 onSync = viewModel::sync,
+                // The crown is water-immune, so a rotary sync skips the contact-size guard.
+                onCrownSync = { viewModel.sync(fromTouch = false) },
                 onReset = viewModel::reset,
                 onAnyTap = viewModel::noteInteraction,
             )
         }
+    }
+
+    /**
+     * Records the contact size of every touch-down before Compose routes it, so the sync and
+     * mode-toggle guards can tell a fingertip from water. Taken here rather than in a pointer
+     * modifier because Compose's PointerInputChange doesn't carry touch-major, and dispatch order
+     * here is unambiguous. Never consumes the event — the guards decide, not this.
+     */
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.pointerCount > 0) {
+            when (ev.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    viewModel.noteContactSize(ev.getTouchMajor(0))
+                    contactDownMs = SystemClock.elapsedRealtime()
+                    contactPeakMajor = ev.getTouchMajor(0)
+                    Log.d(TAG, "down major=${ev.getTouchMajor(0)}")
+                }
+                // Peak, not the down value: a contact grows as it settles, and the peak is what
+                // separates a fingertip from water.
+                MotionEvent.ACTION_MOVE -> {
+                    contactPeakMajor = maxOf(contactPeakMajor, ev.getTouchMajor(0))
+                    viewModel.noteContactPeak(ev.getTouchMajor(0))
+                }
+
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    val heldMs = SystemClock.elapsedRealtime() - contactDownMs
+                    val cancelled = ev.actionMasked == MotionEvent.ACTION_CANCEL
+                    Log.d(TAG, "up peak=$contactPeakMajor heldMs=$heldMs cancelled=$cancelled")
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     override fun onNewIntent(intent: Intent) {

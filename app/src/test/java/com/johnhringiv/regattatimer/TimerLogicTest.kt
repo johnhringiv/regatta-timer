@@ -23,6 +23,18 @@ class TimerLogicTest {
     @Test
     fun `worst case cannot exceed armed duration`() = assertEquals(300_000L, syncRemaining(270_000L))
 
+    // A tap can land after the deadline has passed (frozen process, late wake); sync() gates
+    // on `<= 0` to fire the gun, so these must never come back positive.
+    @Test
+    fun `just past the gun syncs to zero`() = assertEquals(0L, syncRemaining(-1L))
+
+    @Test
+    fun `well past the gun never rounds back up to a positive countdown`() {
+        for (ms in longArrayOf(-15_000L, -30_000L, -45_000L, -90_000L, -600_000L)) {
+            assert(syncRemaining(ms) <= 0L) { "syncRemaining($ms) must not resurrect a countdown" }
+        }
+    }
+
     @Test
     fun formatting() {
         assertEquals("5:00", formatMmSs(300))
