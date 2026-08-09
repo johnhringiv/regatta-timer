@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.os.PowerManager
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -33,6 +34,51 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
     private var ticker: Job? = null
     private var idleGuard: Job? = null
     private var inAmbient = false
+
+    /**
+     * Contact size of the most recent touch-down, in MotionEvent touch-major units, recorded by
+     * MainActivity.dispatchTouchEvent before Compose sees the event. 0 = device doesn't report it.
+     */
+    private var lastContactSize = 0f
+
+    /** Peak contact size seen during the current gesture. See [noteContactPeak]. */
+    private var lastContactPeak = 0f
+
+    /** Records the contact size of a touch-down so the sync/toggle guards can consult it. */
+    fun noteContactSize(touchMajor: Float) {
+        lastContactSize = touchMajor
+        lastContactPeak = touchMajor
+    }
+
+    /**
+     * Records the largest contact seen so far in this gesture.
+     *
+     * A quick tap lands firm, so its touch-down value is representative. A deliberate PRESS lands
+     * soft and spreads as the finger flattens — measured on-watch as down=7.98 growing to
+     * peak=14.96 over a 1676ms hold. Judging a long-press by its touch-down value therefore
+     * rejects real presses, which is why reset consults the peak instead.
+     */
+    fun noteContactPeak(touchMajor: Float) {
+        lastContactPeak = maxOf(lastContactPeak, touchMajor)
+    }
+
+    /**
+     * Whether the last touch-down was a fingertip rather than water. Rejections are silent — no
+     * haptic — because a buzz would tell the sailor something happened when nothing did.
+     *
+     * Logged either way at DEBUG so the floor can be refined from real sailing data rather than
+     * the small lab sample it was derived from.
+     */
+    private fun acceptTouch(
+        action: String,
+        usePeak: Boolean = false,
+        floor: Float = FINGER_CONTACT_FLOOR,
+    ): Boolean {
+        val contact = if (usePeak) lastContactPeak else lastContactSize
+        val ok = isFingerContact(contact, floor)
+        Log.d(TAG, "$action contact=$contact peak=$usePeak accepted=$ok floor=$floor")
+        return ok
+    }
 
     // Water on the screen triggers the palm gesture and forces ambient mode; a partial
     // wake lock keeps the ticker (display + haptic cues) running through the countdown.
@@ -134,6 +180,8 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
 
     fun toggleMode() {
         val st = _state.value
+        // Armed, a stray contact silently swaps a 5-minute RRS 26 start for a 3-minute club one.
+        if (!acceptTouch("toggleMode")) return
         if (st is TimerState.Idle) {
             val next = st.mode.other()
             _state.value = TimerState.Idle(next)
@@ -161,9 +209,15 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Round the remaining time to the nearest whole minute (correct on the next gun). */
-    fun sync() {
+    /**
+     * Round the remaining time to the nearest whole minute (correct on the next gun).
+     *
+     * [fromTouch] false bypasses the contact-size guard — the crown is water-immune, so a rotary
+     * sync is always deliberate and must never be second-guessed.
+     */
+    fun sync(fromTouch: Boolean = true) {
         val st = _state.value
+        if (fromTouch && !acceptTouch("sync")) return
         if (st is TimerState.Countdown) {
             val now = SystemClock.elapsedRealtime()
             val newRemaining = syncRemaining(st.deadline - now)
@@ -184,6 +238,10 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
 
     fun reset() {
         val st = _state.value
+        // Water held on the glass long enough to trip the long-press and wiped a live countdown
+        // on-watch, so reset is guarded too. Judged on the PEAK, not the touch-down value: a
+        // deliberate press lands soft and spreads, so the down value rejects real presses.
+        if (!acceptTouch("reset", usePeak = true, floor = RESET_CONTACT_FLOOR)) return
         if (st !is TimerState.Idle) {
             _state.value = TimerState.Idle(st.mode)
             _displaySeconds.value = st.mode.durationSeconds
@@ -246,7 +304,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
                             lastShown = -1L
                             continue
                         }
-                        val sec = (remaining + 999) / 1000 // ceil: shows 5:00 for the first second
+                        val sec = countdownSecondsAt(st.deadline, now) // ceil: 5:00 for the first second
                         if (sec != lastShown) {
                             if (lastShown != -1L) countdownCue(sec, st.mode)
                             lastShown = sec
@@ -271,6 +329,7 @@ class TimerViewModel(app: Application) : AndroidViewModel(app) {
     private companion object {
         const val IDLE_SCREEN_HOLD_MS = 10 * 60_000L
         const val GUN_LATENESS_MS = 2_000L
+        const val TAG = "RegattaTimer"
     }
 
     // LAST in the class: init runs in declaration order, and restoring a race touches

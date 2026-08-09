@@ -26,11 +26,11 @@ The beta is live on Google Play (closed testing) — no sideloading needed. Goog
 ## Features
 
 - **5-minute (RRS 26) and 3-minute start sequences**
-- **Sync to nearest minute** — tap SYNC at any gun to correct the countdown (3:22 → 3:00, 3:40 → 4:00)
+- **Sync to nearest minute** — tap SYNC at any gun to correct the countdown (3:22 → 3:00, 3:40 → 4:00), or turn the crown when the glass is wet
 - **Automatic count-up** after the start for elapsed race time
 - **Haptic signals**: double buzz at 4:00 (prep), long buzz at 1:00, ticks through the final 10 seconds, gun blast at 0:00
 - **Screen never leaves the app** while armed or counting down; count-up dims to an always-on ambient display
-- **Wet-proof**: countdown, display, and haptics keep running even when water forces the watch into ambient mode; huge half-screen touch targets; long-press-guarded reset so splashes can't kill your sequence
+- **Wet-proof**: countdown, display, and haptics keep running even when water forces the watch into ambient mode; huge half-screen touch targets; spray is filtered out by contact size, and the crown syncs when you don't trust the screen at all; long-press-guarded reset
 - **Quick-launch tile**: swipe from the watch face, tap 5 min or 3 min, and the timer opens pre-armed
 - **Watch-face complication**: weather-style ring where the dot is time remaining, ticking countdown in the center — one tap starts the last-used sequence right from the face
 - **Survives interruptions**: an in-flight countdown or race is restored at the correct time even if the app is closed — or the watch reboots
@@ -87,6 +87,8 @@ Needs Wear OS 5+ (minSdk 34). `adb` ships with [Android platform-tools](https://
 ```
 
 Requires JDK 17+ and the Android SDK (compileSdk 37). Release signing reads `keystore.properties` at the repo root (gitignored); CI restores it from the `KEYSTORE_B64` / `KEYSTORE_PASSWORD` secrets.
+
+Debug builds use the applicationId `com.johnhringiv.regattatimer.debug`, so a dev build installs alongside a Play Store copy on the same watch instead of colliding with its signature.
 
 After cloning, enable the repo hooks (auto-formats Markdown with Prettier on commit; CI enforces):
 

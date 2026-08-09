@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug builds carry a distinct name so a dev build can never be mistaken for the Play Store
+  install sitting alongside it (see applicationIdSuffix in app/build.gradle.kts). The launcher
+  entry, the tile and the complication all label from @string/app_name, so overriding it here
+  renames all three at once.
+-->
+<resources>
+    <string name="app_name">RT DEBUG</string>
+</resources>
