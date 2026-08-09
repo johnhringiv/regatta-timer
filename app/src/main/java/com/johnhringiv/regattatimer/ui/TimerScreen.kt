@@ -36,6 +36,7 @@ import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
 import com.johnhringiv.regattatimer.Mode
 import com.johnhringiv.regattatimer.TimerState
+import com.johnhringiv.regattatimer.formatElapsed
 import com.johnhringiv.regattatimer.formatMmSs
 import kotlin.math.abs
 
@@ -62,6 +63,23 @@ private const val ROTARY_SYNC_THRESHOLD_PX = 160f
 
 /** A pause longer than this restarts the rotary accumulator, so slow drift can never add up. */
 private const val ROTARY_IDLE_RESET_MS = 500L
+
+/**
+ * Display size for the giant digits, shrunk for the longer strings a long race produces.
+ *
+ * The digits are tabular (tnum), so rendered width tracks character count closely enough that a
+ * lookup beats a measuring pass. Countdowns ("5:00") and races under an hour ("59:59") are
+ * untouched and keep the original 68.sp — only the H:MM:SS forms step down.
+ *
+ * Sizes verified by rendering each band at 408x408 / density 320 — the Pixel Watch 3's geometry,
+ * reproduced on an emulator via `wm size`. Paired with maxLines/softWrap below so an unforeseen
+ * string clips rather than wrapping and destroying the layout, which is how this bug presented.
+ */
+private fun digitFontSize(text: String) = when (text.length) {
+    in 0..5 -> 68.sp // 5:00 .. 59:59 — the overwhelmingly common case
+    6, 7 -> 44.sp // 1:00:00 .. 9:59:59
+    else -> 34.sp // 10:00:00 and beyond
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -182,11 +200,19 @@ fun TimerScreen(
                     fontSize = 14.sp,
                     color = labelColor,
                 )
+                // Count-up alone can run past an hour; the countdown is capped at its armed
+                // duration, so it keeps the plain M:SS it has always had.
+                val timeText = when (state) {
+                    is TimerState.CountUp -> formatElapsed(displaySeconds)
+                    else -> formatMmSs(displaySeconds)
+                }
                 Text(
-                    text = formatMmSs(displaySeconds),
-                    fontSize = 68.sp,
+                    text = timeText,
+                    fontSize = digitFontSize(timeText),
                     fontWeight = FontWeight.Bold,
                     color = digitColor,
+                    maxLines = 1,
+                    softWrap = false,
                     style = TextStyle(fontFeatureSettings = "tnum"),
                 )
                 Text(

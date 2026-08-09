@@ -21,7 +21,7 @@ android {
         targetSdk = 36
         // versionCode bumps on every feature-branch change (CI-enforced > main).
         // versionName bumps once per PR to main (CI-enforced).
-        versionCode = 20
+        versionCode = 21
         versionName = "0.8"
     }
 

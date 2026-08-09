@@ -117,3 +117,22 @@ fun formatMmSs(totalSeconds: Long): String {
     val s = totalSeconds % 60
     return String.format(Locale.ROOT, "%d:%02d", m, s)
 }
+
+/**
+ * Elapsed race time for the count-up display.
+ *
+ * Under an hour this is plain M:SS — identical to the countdown, so the digits do not change shape
+ * at the gun, which is the moment a sailor is least able to reread the screen. Past an hour it
+ * rolls into H:MM:SS instead of letting the minute field grow without bound.
+ *
+ * Unbounded minutes was not hypothetical. Nothing ends a race, so a timer left running after one
+ * reached "1022:47" on-watch: too wide for the display, so it wrapped onto a second line and shoved
+ * the RACE label off the screen entirely. [com.johnhringiv.regattatimer.ui] shrinks the type for
+ * these longer strings; this function keeps them as short as they can honestly be.
+ */
+fun formatElapsed(totalSeconds: Long): String {
+    val total = totalSeconds.coerceAtLeast(0L)
+    val hours = total / 3600
+    if (hours == 0L) return formatMmSs(total)
+    return String.format(Locale.ROOT, "%d:%02d:%02d", hours, (total % 3600) / 60, total % 60)
+}
